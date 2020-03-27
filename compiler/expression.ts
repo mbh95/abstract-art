@@ -6,9 +6,11 @@ export enum ExpressionType {
     VAR_Y = "VAR_Y",
     VAR_T = "VAR_T",
     OP_ABS = "OP_ABS",
-    OP_MOD = "OP_MOD",
     OP_ADD = "OP_ADD",
     OP_SUB = "OP_SUB",
+    OP_MUL = "OP_MUL",
+    OP_DIV = "OP_DIV",
+    OP_MOD = "OP_MOD",
 }
 
 export interface Expression {
@@ -28,6 +30,8 @@ export const EXPRESSION_METADATA: Map<ExpressionType, ExpressionMetadata> = Map<
     .set(ExpressionType.VAR_Y, {numArgs: 0})
     .set(ExpressionType.VAR_T, {numArgs: 0})
     .set(ExpressionType.OP_ABS, {numArgs: 1})
-    .set(ExpressionType.OP_MOD, {numArgs: 2})
     .set(ExpressionType.OP_ADD, {numArgs: 2})
-    .set(ExpressionType.OP_SUB, {numArgs: 2});
+    .set(ExpressionType.OP_SUB, {numArgs: 2})
+    .set(ExpressionType.OP_MUL, {numArgs: 2})
+    .set(ExpressionType.OP_DIV, {numArgs: 2})
+    .set(ExpressionType.OP_MOD, {numArgs: 2});

@@ -19,7 +19,9 @@ const emitter: Map<ExpressionType, (exp: Expression) => string> = Map<Expression
     .set(ExpressionType.OP_ABS, generateFnEmitter("abs"))
     .set(ExpressionType.OP_MOD, generateFnEmitter("mod"))
     .set(ExpressionType.OP_ADD, generateInfixEmitter("+"))
-    .set(ExpressionType.OP_SUB, generateInfixEmitter("-"));
+    .set(ExpressionType.OP_SUB, generateInfixEmitter("-"))
+    .set(ExpressionType.OP_MUL, generateInfixEmitter("*"))
+    .set(ExpressionType.OP_DIV, generateInfixEmitter("/"));
 
 function emit(exp: Expression): string {
     return emitter.get(exp.type)!(exp);
@@ -27,7 +29,7 @@ function emit(exp: Expression): string {
 
 export function emitGlsl(exp: Expression): string {
     return header +
-`
+        `
 void main() {
     vec3 x = vec3(pos.x, pos.x, pos.x);
     vec3 y = vec3(pos.y, pos.y, pos.y);
