@@ -11,6 +11,7 @@ export enum ExpressionType {
     OP_MUL = "OP_MUL",
     OP_DIV = "OP_DIV",
     OP_MOD = "OP_MOD",
+    OP_RGB = "OP_RGB",
 }
 
 export interface Expression {
@@ -34,4 +35,5 @@ export const EXPRESSION_METADATA: Map<ExpressionType, ExpressionMetadata> = Map<
     .set(ExpressionType.OP_SUB, {numArgs: 2})
     .set(ExpressionType.OP_MUL, {numArgs: 2})
     .set(ExpressionType.OP_DIV, {numArgs: 2})
-    .set(ExpressionType.OP_MOD, {numArgs: 2});
+    .set(ExpressionType.OP_MOD, {numArgs: 2})
+    .set(ExpressionType.OP_RGB, {numArgs: 3});

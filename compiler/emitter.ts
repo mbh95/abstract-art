@@ -21,7 +21,8 @@ const emitter: Map<ExpressionType, (exp: Expression) => string> = Map<Expression
     .set(ExpressionType.OP_ADD, generateInfixEmitter("+"))
     .set(ExpressionType.OP_SUB, generateInfixEmitter("-"))
     .set(ExpressionType.OP_MUL, generateInfixEmitter("*"))
-    .set(ExpressionType.OP_DIV, generateInfixEmitter("/"));
+    .set(ExpressionType.OP_DIV, generateInfixEmitter("/"))
+    .set(ExpressionType.OP_RGB, (exp) => `vec3(${exp.args.map(arg=>`${emit(arg)}.x`).join(", ")})`);
 
 function emit(exp: Expression): string {
     return emitter.get(exp.type)!(exp);
