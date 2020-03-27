@@ -90,7 +90,7 @@ class Main extends Component<MainProps, MainState> {
                 % this.state.period) / this.state.period
         });
 
-        const timeLoc = glCtx.getUniformLocation(this.state.program!, "u_time");
+        const timeLoc = glCtx.getUniformLocation(this.state.program!, "time");
         glCtx.uniform1f(timeLoc, this.state.time);
 
         // render

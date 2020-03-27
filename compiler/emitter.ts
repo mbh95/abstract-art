@@ -3,8 +3,12 @@ import {Map} from "immutable";
 import header from "raw-loader!./glsl/header.frag";
 
 
-function generateEmitter(fnName: string): (exp: Expression) => string {
+function generateFnEmitter(fnName: string): (exp: Expression) => string {
     return ((exp: Expression) => `${fnName}(${exp.args.map(arg => emit(arg)).join(", ")})`);
+}
+
+function generateInfixEmitter(joiner: string): (exp: Expression) => string {
+    return ((exp: Expression) => `(${exp.args.map(arg => emit(arg)).join(joiner)})`);
 }
 
 const emitter: Map<ExpressionType, (exp: Expression) => string> = Map<ExpressionType, (exp: Expression) => string>()
@@ -12,8 +16,10 @@ const emitter: Map<ExpressionType, (exp: Expression) => string> = Map<Expression
     .set(ExpressionType.VAR_X, (exp) => `x`)
     .set(ExpressionType.VAR_Y, (exp) => `y`)
     .set(ExpressionType.VAR_T, (exp) => `t`)
-    .set(ExpressionType.OP_ABS, generateEmitter("abs"))
-    .set(ExpressionType.OP_MOD, generateEmitter("mod"));
+    .set(ExpressionType.OP_ABS, generateFnEmitter("abs"))
+    .set(ExpressionType.OP_MOD, generateFnEmitter("mod"))
+    .set(ExpressionType.OP_ADD, generateInfixEmitter("+"))
+    .set(ExpressionType.OP_SUB, generateInfixEmitter("-"));
 
 function emit(exp: Expression): string {
     return emitter.get(exp.type)!(exp);
