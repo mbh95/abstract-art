@@ -13,6 +13,9 @@ const LITERAL_OPS: Map<string, ExpressionType> = Map<string, ExpressionType>()
     .set("*", ExpressionType.OP_MUL)
     .set("/", ExpressionType.OP_DIV)
     .set("%", ExpressionType.OP_MOD)
+    .set("sin", ExpressionType.OP_SIN)
+    .set("cos", ExpressionType.OP_COS)
+    .set("tan", ExpressionType.OP_TAN)
     .set("rgb", ExpressionType.OP_RGB)
     .set("bw", ExpressionType.OP_BW);
 
