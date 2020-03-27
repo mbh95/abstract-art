@@ -2,7 +2,7 @@ import defaultVert from "raw-loader!./glsl/default.vert";
 import defaultFrag from "raw-loader!./glsl/default.frag";
 
 function createShader(
-    gl: WebGLRenderingContext, type: GLenum, source: string): WebGLShader | null {
+    gl: WebGL2RenderingContext, type: GLenum, source: string): WebGLShader | null {
     console.log(source);
     const shader: WebGLShader = gl.createShader(type)!;
     gl.shaderSource(shader, source);
@@ -21,12 +21,11 @@ function createShader(
 }
 
 export function createProgram(
-    gl: WebGLRenderingContext, vertexShaderSrc: string,
-    fragmentShaderSrc: string): WebGLProgram | null {
+    gl: WebGL2RenderingContext, fragmentShaderSrc?: string, vertexShaderSrc?: string): WebGLProgram | null {
     const program: WebGLProgram = gl.createProgram()!;
-    const vertexShader: WebGLShader | null = createShader(gl, gl.VERTEX_SHADER, vertexShaderSrc);
+    const vertexShader: WebGLShader | null = createShader(gl, gl.VERTEX_SHADER, vertexShaderSrc? vertexShaderSrc : defaultVert);
     const fragmentShader: WebGLShader | null = createShader(
-        gl, gl.FRAGMENT_SHADER, fragmentShaderSrc);
+        gl, gl.FRAGMENT_SHADER, fragmentShaderSrc? fragmentShaderSrc : defaultFrag);
 
     if (!vertexShader || !fragmentShader) {
         gl.deleteProgram(program);
@@ -43,17 +42,4 @@ export function createProgram(
     console.error(gl.getProgramInfoLog(program));
     gl.deleteProgram(program);
     return null;
-}
-
-export function tryCreateProgram(
-    gl: WebGLRenderingContext, vertexShaderSrc: string,
-    fragmentShaderSrc: string): WebGLProgram | null {
-    let program = createProgram(gl, vertexShaderSrc, fragmentShaderSrc);
-    if (program === null) {
-        program = createProgram(gl, defaultVert, defaultFrag);
-    }
-    if (program === null) {
-        throw Error(`Failed to compile even the simplest shader!`);
-    }
-    return program;
 }
