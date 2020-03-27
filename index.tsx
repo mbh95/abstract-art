@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Main from "./view/main";
 import DynamicView from "./view/dynamicView";
+import "./index.css";
 
 ReactDOM.render(
     <div>

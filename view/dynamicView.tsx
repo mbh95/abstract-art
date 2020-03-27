@@ -19,7 +19,7 @@ class DynamicView extends Component<DynamicViewProps, DynamicViewState> {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    handleChange(event: ChangeEvent<HTMLInputElement>) {
+    handleChange(event: ChangeEvent<HTMLTextAreaElement>) {
         this.setState({src: event.target.value});
     }
 
@@ -27,7 +27,7 @@ class DynamicView extends Component<DynamicViewProps, DynamicViewState> {
         return (
             <div>
                 <Main src={this.state.src}/>
-                <input type="text" value={this.state.src} onChange={this.handleChange}/>
+                <textarea rows={8} value={this.state.src} onChange={this.handleChange}/>
             </div>
         );
     }
