@@ -41,7 +41,7 @@ export class Scanner {
 
     private prevChar(): void {
         if (this.index <= 0) {
-            throw Error(`prevChar() attempted on scanner at index ${this.index}.`)
+            throw Error(`Scan error: prevChar() attempted on scanner at index ${this.index}.`)
         }
         this.index--;
     }
