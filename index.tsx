@@ -5,7 +5,7 @@ import DynamicView from "./view/dynamicView";
 
 ReactDOM.render(
     <div>
-        <Main src={"+ % x y t"}/>
-        <Main src={"- % x y t"}/>
-        <DynamicView initialSrc={"+ % t x y"}/>
+        <DynamicView initialSrc={"rgb * % x t x  % y t * x y"}/>
+        <DynamicView initialSrc={"rgb % t % x y * t * x y / t / x y"}/>
+        <DynamicView initialSrc={"rgb (* (* t x) y) (* (- 1 t) (- x y)) (* (- 0.5 t) (- 1 x))"}/>
     </div>, document.getElementById('root'));
