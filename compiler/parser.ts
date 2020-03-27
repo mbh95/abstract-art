@@ -13,7 +13,8 @@ const LITERAL_OPS: Map<string, ExpressionType> = Map<string, ExpressionType>()
     .set("*", ExpressionType.OP_MUL)
     .set("/", ExpressionType.OP_DIV)
     .set("%", ExpressionType.OP_MOD)
-    .set("rgb", ExpressionType.OP_RGB);
+    .set("rgb", ExpressionType.OP_RGB)
+    .set("bw", ExpressionType.OP_BW);
 
 function expectEnd(scan: Scanner): void {
     const nextToken = scan.nextToken();
