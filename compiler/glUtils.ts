@@ -2,7 +2,7 @@ import defaultVert from "raw-loader!./glsl/default.vert";
 import defaultFrag from "raw-loader!./glsl/default.frag";
 
 function createShader(
-    gl: WebGL2RenderingContext, type: GLenum, source: string): WebGLShader | null {
+    gl: WebGLRenderingContext, type: GLenum, source: string): WebGLShader | null {
     console.log(source);
     const shader: WebGLShader = gl.createShader(type)!;
     gl.shaderSource(shader, source);
@@ -21,7 +21,7 @@ function createShader(
 }
 
 export function createProgram(
-    gl: WebGL2RenderingContext, fragmentShaderSrc?: string, vertexShaderSrc?: string): WebGLProgram | null {
+    gl: WebGLRenderingContext, fragmentShaderSrc?: string, vertexShaderSrc?: string): WebGLProgram | null {
     const program: WebGLProgram = gl.createProgram()!;
     const vertexShader: WebGLShader | null = createShader(gl, gl.VERTEX_SHADER, vertexShaderSrc? vertexShaderSrc : defaultVert);
     const fragmentShader: WebGLShader | null = createShader(

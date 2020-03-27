@@ -35,7 +35,7 @@ void main() {
     vec3 x = vec3(pos.x, pos.x, pos.x);
     vec3 y = vec3(pos.y, pos.y, pos.y);
     vec3 t = vec3(time, time, time);
-    fragColor = vec4(${emit(exp)}, 1);
+    gl_FragColor = vec4(${emit(exp)}, 1);
 }
 `;
 }

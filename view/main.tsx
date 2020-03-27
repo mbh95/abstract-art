@@ -32,7 +32,7 @@ class Main extends Component<MainProps, MainState> {
     updateGlProgram(): void {
 
         const canvas: HTMLCanvasElement = this.state.canvasRef.current!;
-        const glCtx: WebGL2RenderingContext = canvas.getContext("webgl2")!;
+        const glCtx: WebGLRenderingContext = canvas.getContext("webgl")!;
 
         let program: WebGLProgram;
 
@@ -73,7 +73,7 @@ class Main extends Component<MainProps, MainState> {
     }
 
     update(): void {
-        const glCtx: WebGL2RenderingContext = this.state.canvasRef.current!.getContext("webgl2")!;
+        const glCtx: WebGLRenderingContext = this.state.canvasRef.current!.getContext("webgl")!;
 
         // update resolution
         const newWidth = this.state.canvasRef.current!.clientWidth;
