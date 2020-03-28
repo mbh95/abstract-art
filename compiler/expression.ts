@@ -16,6 +16,9 @@ export enum TerminalType {
     OP_TAN = "OP_TAN",
     OP_RGB = "OP_RGB",
     OP_BW = "OP_BW",
+    OP_CEIL = "OP_CEIL",
+    OP_FLOOR = "OP_FLOOR",
+    OP_ROUND = "OP_ROUND",
 }
 
 export interface Expression {
@@ -46,7 +49,10 @@ const TERMINALS: List<TerminalMetadata> = List.of<TerminalMetadata>(
     {type: TerminalType.OP_COS, numArgs: 1, tokenLiteral: "cos"},
     {type: TerminalType.OP_TAN, numArgs: 1, tokenLiteral: "tan"},
     {type: TerminalType.OP_RGB, numArgs: 3, tokenLiteral: "rgb"},
-    {type: TerminalType.OP_BW, numArgs: 1, tokenLiteral: "bw"}
+    {type: TerminalType.OP_BW, numArgs: 1, tokenLiteral: "bw"},
+    {type: TerminalType.OP_CEIL, numArgs: 1, tokenLiteral: "ceil"},
+    {type: TerminalType.OP_FLOOR, numArgs: 1, tokenLiteral: "floor"},
+    {type: TerminalType.OP_ROUND, numArgs: 1, tokenLiteral: "round"}
 );
 export const TERMINALS_MAP: Map<TerminalType, TerminalMetadata> = TERMINALS.toMap().mapKeys((key: number, val: TerminalMetadata)=>val.type);
 
