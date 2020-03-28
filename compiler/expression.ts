@@ -1,6 +1,6 @@
-import {Map} from "immutable";
+import {List, Map} from "immutable";
 
-export enum ExpressionType {
+export enum TerminalType {
     CONST = "CONST",
     VAR_X = "VAR_X",
     VAR_Y = "VAR_Y",
@@ -19,29 +19,51 @@ export enum ExpressionType {
 }
 
 export interface Expression {
-    readonly type: ExpressionType;
+    readonly type: TerminalType;
     readonly name: string;
     readonly args: Expression[];
 }
 
-interface ExpressionMetadata {
+export interface TerminalMetadata {
+    readonly type: TerminalType;
     readonly numArgs: number;
+    readonly tokenLiteral?: string;
+    readonly tokenRegExp?: RegExp;
 }
 
-// Parse metadata about different types of expressions.
-export const EXPRESSION_METADATA: Map<ExpressionType, ExpressionMetadata> = Map<ExpressionType, ExpressionMetadata>()
-    .set(ExpressionType.CONST, {numArgs: 0})
-    .set(ExpressionType.VAR_X, {numArgs: 0})
-    .set(ExpressionType.VAR_Y, {numArgs: 0})
-    .set(ExpressionType.VAR_T, {numArgs: 0})
-    .set(ExpressionType.OP_ABS, {numArgs: 1})
-    .set(ExpressionType.OP_ADD, {numArgs: 2})
-    .set(ExpressionType.OP_SUB, {numArgs: 2})
-    .set(ExpressionType.OP_MUL, {numArgs: 2})
-    .set(ExpressionType.OP_DIV, {numArgs: 2})
-    .set(ExpressionType.OP_MOD, {numArgs: 2})
-    .set(ExpressionType.OP_SIN, {numArgs: 1})
-    .set(ExpressionType.OP_COS, {numArgs: 1})
-    .set(ExpressionType.OP_TAN, {numArgs: 1})
-    .set(ExpressionType.OP_RGB, {numArgs: 3})
-    .set(ExpressionType.OP_BW, {numArgs: 1});
+const TERMINALS: List<TerminalMetadata> = List.of<TerminalMetadata>(
+    {type: TerminalType.CONST, numArgs: 0, tokenRegExp: /^\d+(\.\d+)?$/},
+    {type: TerminalType.VAR_X, numArgs: 0, tokenLiteral: "x"},
+    {type: TerminalType.VAR_Y, numArgs: 0, tokenLiteral: "y"},
+    {type: TerminalType.VAR_T, numArgs: 0, tokenLiteral: "t"},
+    {type: TerminalType.OP_ABS, numArgs: 1, tokenLiteral: "abs"},
+    {type: TerminalType.OP_ADD, numArgs: 2, tokenLiteral: "+"},
+    {type: TerminalType.OP_SUB, numArgs: 2, tokenLiteral: "-"},
+    {type: TerminalType.OP_MUL, numArgs: 2, tokenLiteral: "*"},
+    {type: TerminalType.OP_DIV, numArgs: 2, tokenLiteral: "/"},
+    {type: TerminalType.OP_MOD, numArgs: 2, tokenLiteral: "%"},
+    {type: TerminalType.OP_SIN, numArgs: 1, tokenLiteral: "sin"},
+    {type: TerminalType.OP_COS, numArgs: 1, tokenLiteral: "cos"},
+    {type: TerminalType.OP_TAN, numArgs: 1, tokenLiteral: "tan"},
+    {type: TerminalType.OP_RGB, numArgs: 3, tokenLiteral: "rgb"},
+    {type: TerminalType.OP_BW, numArgs: 1, tokenLiteral: "bw"}
+);
+export const TERMINALS_MAP: Map<TerminalType, TerminalMetadata> = TERMINALS.toMap().mapKeys((key: number, val: TerminalMetadata)=>val.type);
+
+export const LITERAL_TERMINALS: Map<string, TerminalMetadata> = TERMINALS_MAP
+    .filter((val: TerminalMetadata, _key: TerminalType) => (val.tokenLiteral !== undefined))
+    .mapKeys((k: TerminalType, v: TerminalMetadata) => v.tokenLiteral!);
+
+export const REGEXP_TERMINALS: List<TerminalMetadata> = TERMINALS.filter(op=>op.tokenRegExp!==undefined);
+
+export function recognizeTerminal(str: string): TerminalMetadata | undefined {
+    const term = LITERAL_TERMINALS.get(str);
+    if (term !== undefined) {
+        return term;
+    }
+    for (const term of REGEXP_TERMINALS) {
+        if(term.tokenRegExp!.test(str)) {
+            return term;
+        }
+    }
+}

@@ -1,31 +1,17 @@
-import {Map} from "immutable";
 import {Scanner, Token, TokenType} from "./scanner";
-import {Expression, EXPRESSION_METADATA, ExpressionType} from "./expression";
+import {Expression} from "./expression";
 
-// Subset of ops that can be parsed from a unique literal.
-const LITERAL_OPS: Map<string, ExpressionType> = Map<string, ExpressionType>()
-    .set("x", ExpressionType.VAR_X)
-    .set("y", ExpressionType.VAR_Y)
-    .set("t", ExpressionType.VAR_T)
-    .set("abs", ExpressionType.OP_ABS)
-    .set("+", ExpressionType.OP_ADD)
-    .set("-", ExpressionType.OP_SUB)
-    .set("*", ExpressionType.OP_MUL)
-    .set("/", ExpressionType.OP_DIV)
-    .set("%", ExpressionType.OP_MOD)
-    .set("sin", ExpressionType.OP_SIN)
-    .set("cos", ExpressionType.OP_COS)
-    .set("tan", ExpressionType.OP_TAN)
-    .set("rgb", ExpressionType.OP_RGB)
-    .set("bw", ExpressionType.OP_BW);
-
-function expectEnd(scan: Scanner): void {
-    const nextToken = scan.nextToken();
-    if (nextToken !== undefined) {
-        throw Error(`Parse error: Expected end of expression, found "${nextToken}"`);
-    }
-}
-
+/**
+ * Parse a string representing an expression into an Expression AST.
+ *
+ * Grammar:
+ * Expression -> (Expression)
+ * Expression -> TERMINAL ArgList
+ * ArgList -> Expression ArgList
+ * ArgList -> _
+ *
+ * Each TERMINAL token represents either an Operator with a known number of arguments, a variable, or a constant value.
+ */
 export function parse(str: string): Expression {
     const scan: Scanner = new Scanner(str);
     const exp = parseExpression(scan);
@@ -33,6 +19,12 @@ export function parse(str: string): Expression {
     return exp;
 }
 
+function expectEnd(scan: Scanner): void {
+    const nextToken = scan.nextToken();
+    if (nextToken !== undefined) {
+        throw Error(`Parse error: Expected end of expression, found "${nextToken.val}"`);
+    }
+}
 
 function expectAndConsume(scan: Scanner, tokenType: TokenType): void {
     const tok = scan.nextToken();
@@ -47,51 +39,30 @@ function parseExpression(scan: Scanner): Expression {
     const firstToken = scan.nextToken();
     if (firstToken === undefined) {
         throw Error(`Parse error: Expected expression, found none.`);
-    } else if (firstToken.type === TokenType.PAREN_OPEN) {
+    } else if (firstToken.type === TokenType.PAREN_OPEN) { // Expression -> (Expression)
         const exp = parseExpression(scan);
         expectAndConsume(scan, TokenType.PAREN_CLOSE);
         return exp;
-    } else if (firstToken.type === TokenType.OP) {
-        return parseOpAndArgList(firstToken, scan);
-    } else if (firstToken.type === TokenType.CONST) {
-        return parseConstant(firstToken);
+    } else if (firstToken.type === TokenType.TERMINAL) { // Expression -> TERMINAL ArgList
+        return parseTerminalAndArgList(firstToken, scan);
     }
     throw Error(`Parse error: Unexpected token: ${firstToken}.`);
 }
 
-function parseOpAndArgList(opToken: Token, scan: Scanner): Expression {
-    const type = recognizeOp(opToken);
-    const typeData = EXPRESSION_METADATA.get(type);
-    if (typeData === undefined) {
-        throw Error(`Parse error: Expression missing metadata: ${type}.`);
+function parseTerminalAndArgList(token: Token, scan: Scanner): Expression {
+    if (token.type !== TokenType.TERMINAL || !token.terminalMetadata) {
+        throw Error(`Parse error: Invalid TERMINAL token ${token}`);
     }
+
+    // ArgList -> Expression ArgList
+    // ArgList -> _
     const args = [];
-    for (let i = 0; i < typeData.numArgs; i++) {
+    for (let i = 0; i < token.terminalMetadata.numArgs; i++) {
         args.push(parseExpression(scan));
     }
     return {
-        type,
-        name: opToken.val,
+        type: token.terminalMetadata.type,
+        name: token.val,
         args
     };
-}
-
-function recognizeOp(opToken: Token): ExpressionType {
-    if (opToken.type !== TokenType.OP) {
-        throw Error(`Parse error: Expected OP, found ${opToken.type}.`);
-    }
-    const lowerName = opToken.val.trim().toLowerCase();
-    const tryLiteral = LITERAL_OPS.get(lowerName);
-    if (tryLiteral !== undefined) {
-        return tryLiteral;
-    }
-    throw Error(`Parse error: Unknown op: "${lowerName}"`);
-}
-
-function parseConstant(constToken: Token): Expression {
-    return {
-        type: ExpressionType.CONST,
-        name: constToken.val,
-        args: []
-    }
 }
