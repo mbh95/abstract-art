@@ -30,20 +30,16 @@ const emitter: Map<TerminalType, (exp: Expression) => string> = Map<TerminalType
     .set(TerminalType.OP_ROUND, generateFnEmitter("round"))
     .set(TerminalType.OP_USHIFT, generateFnEmitter("ushift"))
     .set(TerminalType.OP_RGB, generateFnEmitter("rgb"))
-    .set(TerminalType.OP_BW, generateFnEmitter("bw"))
+    .set(TerminalType.OP_BW, generateFnEmitter("bw"));
 
 function emit(exp: Expression): string {
     return emitter.get(exp.type)!(exp);
 }
 
 export function emitGlsl(exp: Expression): string {
-    return header +
-        `
-void main() {
-    vec3 x = vec3(pos.x, pos.x, pos.x);
-    vec3 y = vec3(pos.y, pos.y, pos.y);
-    vec3 t = vec3(time, time, time);
-    gl_FragColor = vec4(${emit(exp)}, 1);
+    return header + `
+vec3 expression(vec3 x, vec3 y, vec3 t) {
+    return ${emit(exp)};
 }
 `;
 }
