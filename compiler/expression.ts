@@ -49,34 +49,6 @@ export interface TerminalMetadata {
     readonly glslEmitter: (exp: Expression) => string;
 }
 
-/**
- * const emitter: Map<TerminalType, (exp: Expression) => string> = Map<TerminalType, (exp: Expression) => string>()
- .set(TerminalType.CONST, (exp) => `vec3(${exp.name}, ${exp.name}, ${exp.name})`)
- .set(TerminalType.VAR_X, (_exp) => `x`)
- .set(TerminalType.VAR_Y, (_exp) => `y`)
- .set(TerminalType.VAR_T, (_exp) => `t`)
- .set(TerminalType.OP_ADD, generateInfixEmitter("+"))
- .set(TerminalType.OP_SUB, generateInfixEmitter("-"))
- .set(TerminalType.OP_MUL, generateInfixEmitter("*"))
- .set(TerminalType.OP_DIV, generateInfixEmitter("/"))
- .set(TerminalType.OP_MOD, generateFnEmitter("mod"))
- .set(TerminalType.OP_ABS, generateFnEmitter("abs"))
- .set(TerminalType.OP_SQRT, generateFnEmitter("sqrt"))
- .set(TerminalType.OP_POW, generateFnEmitter("pow"))
- .set(TerminalType.OP_EXP,generateFnEmitter("exp"))
- .set(TerminalType.OP_LN, generateFnEmitter("log"))
- .set(TerminalType.OP_LOG,generateFnEmitter("logb"))
- .set(TerminalType.OP_SIN, generateFnEmitter("sin"))
- .set(TerminalType.OP_COS, generateFnEmitter("cos"))
- .set(TerminalType.OP_TAN, generateFnEmitter("tan"))
- .set(TerminalType.OP_FLOOR, generateFnEmitter("floor"))
- .set(TerminalType.OP_CEIL, generateFnEmitter("ceil"))
- .set(TerminalType.OP_ROUND, generateFnEmitter("round"))
- .set(TerminalType.OP_USHIFT, generateFnEmitter("ushift"))
- .set(TerminalType.OP_RGB, generateFnEmitter("rgb"))
- .set(TerminalType.OP_BW, generateFnEmitter("bw"));
- */
-
 const TERMINALS: List<TerminalMetadata> = List.of<TerminalMetadata>(
     {
         type: TerminalType.CONST,
