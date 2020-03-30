@@ -14,6 +14,12 @@ export enum TerminalType {
     OP_MOD = "OP_MOD",
     OP_ABS = "OP_ABS",
 
+    OP_SQRT = "OP_SQRT",
+    OP_POW = "OP_POW",
+    OP_EXP = "OP_EXP",
+    OP_LOG = "OP_LOG",
+    OP_LN = "OP_LN",
+
     OP_SIN = "OP_SIN",
     OP_COS = "OP_COS",
     OP_TAN = "OP_TAN",
@@ -43,7 +49,7 @@ export interface TerminalMetadata {
 }
 
 const TERMINALS: List<TerminalMetadata> = List.of<TerminalMetadata>(
-    {type: TerminalType.CONST, numArgs: 0, tokenRegExp: /^\d+(\.\d+)?$/},
+    {type: TerminalType.CONST, numArgs: 0, tokenRegExp: /^-?\d+(\.\d+)?$/},
     {type: TerminalType.VAR_X, numArgs: 0, tokenLiteral: "x"},
     {type: TerminalType.VAR_Y, numArgs: 0, tokenLiteral: "y"},
     {type: TerminalType.VAR_T, numArgs: 0, tokenLiteral: "t"},
@@ -52,6 +58,11 @@ const TERMINALS: List<TerminalMetadata> = List.of<TerminalMetadata>(
     {type: TerminalType.OP_MUL, numArgs: 2, tokenLiteral: "*"},
     {type: TerminalType.OP_DIV, numArgs: 2, tokenLiteral: "/"},
     {type: TerminalType.OP_MOD, numArgs: 2, tokenLiteral: "%"},
+    {type: TerminalType.OP_SQRT, numArgs: 1, tokenLiteral: "sqrt"},
+    {type: TerminalType.OP_POW, numArgs: 2, tokenLiteral: "pow"},
+    {type: TerminalType.OP_EXP, numArgs: 1, tokenLiteral: "exp"},
+    {type: TerminalType.OP_LOG, numArgs: 2, tokenLiteral: "log"},
+    {type: TerminalType.OP_LN, numArgs: 1, tokenLiteral: "ln"},
     {type: TerminalType.OP_ABS, numArgs: 1, tokenLiteral: "abs"},
     {type: TerminalType.OP_SIN, numArgs: 1, tokenLiteral: "sin"},
     {type: TerminalType.OP_COS, numArgs: 1, tokenLiteral: "cos"},

@@ -5,6 +5,10 @@ uniform float time;
 
 vec3 expression(vec3 x, vec3 y, vec3 t);
 
+vec3 logb(vec3 x, vec3 b) {
+    return log(x) / log(b);
+}
+
 vec3 round(vec3 v) {
     return floor(0.5 + v);
 }
@@ -27,6 +31,6 @@ void main() {
     vec3 t = vec3(time, time, time);
     vec3 res = expression(x, y, t);
     // TODO: Explore other ways to map R3->RGB
-    vec3 rgb = (res + 1.0) / 2.0;
+    vec3 rgb = ushift(res);
     gl_FragColor = vec4(rgb, 1.0);
 }
