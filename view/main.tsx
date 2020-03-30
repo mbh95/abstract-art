@@ -10,9 +10,8 @@ interface MainProps {
 interface MainState {
     canvasRef: RefObject<HTMLCanvasElement>;
     program: WebGLProgram | null;
-    startTime: number;
-    time: number;
-    period: number;
+    startTimeMillis: number;
+    elapsedMillis: number;
 }
 
 class Main extends Component<MainProps, MainState> {
@@ -23,9 +22,8 @@ class Main extends Component<MainProps, MainState> {
         this.state = {
             canvasRef: React.createRef<HTMLCanvasElement>(),
             program: null,
-            startTime: 0,
-            time: 0,
-            period: 1000
+            startTimeMillis: 0,
+            elapsedMillis: 0,
         };
     }
 
@@ -68,7 +66,7 @@ class Main extends Component<MainProps, MainState> {
             glCtx.vertexAttribPointer(positionLoc, 2, glCtx.FLOAT, false, 0, 0);
             glCtx.enableVertexAttribArray(positionLoc);
 
-            this.setState({startTime: (new Date()).getTime()});
+            this.setState({startTimeMillis: (new Date()).getTime()});
         });
     }
 
@@ -84,14 +82,17 @@ class Main extends Component<MainProps, MainState> {
             glCtx.viewport(0, 0, glCtx.canvas.width, glCtx.canvas.height);
         }
 
+        const curTime = (new Date()).getTime();
+        const elapsedMillis = curTime - this.state.startTimeMillis;
+        const elapsedSeconds = elapsedMillis / 1000.0;
+
         // update time
         this.setState({
-            time: (((new Date()).getTime() - this.state.startTime)
-                % this.state.period) / this.state.period
+            elapsedMillis
         });
 
         const timeLoc = glCtx.getUniformLocation(this.state.program!, "time");
-        glCtx.uniform1f(timeLoc, this.state.time);
+        glCtx.uniform1f(timeLoc, elapsedSeconds);
 
         // render
         glCtx.drawArrays(glCtx.TRIANGLE_STRIP, 0, 4);
