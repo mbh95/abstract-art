@@ -8,6 +8,8 @@ export enum TerminalType {
     VAR_Y = "VAR_Y",
     VAR_T = "VAR_T",
 
+    OP_INV = "OP_INV",
+
     OP_ADD = "OP_ADD",
     OP_SUB = "OP_SUB",
     OP_MUL = "OP_MUL",
@@ -28,7 +30,13 @@ export enum TerminalType {
     OP_FLOOR = "OP_FLOOR",
     OP_CEIL = "OP_CEIL",
     OP_ROUND = "OP_ROUND",
+    OP_TRUNC = "OP_TRUNC",
 
+    OP_MIN = "OP_MIN",
+    OP_MAX = "OP_MAX",
+
+    OP_CLIP = "OP_CLIP",
+    OP_WRAP = "OP_WRAP",
     OP_USHIFT = "OP_USHIFT",
 
     OP_RGB = "OP_RGB",
@@ -59,6 +67,7 @@ const TERMINALS: List<TerminalMetadata> = List.of<TerminalMetadata>(
     {type: TerminalType.VAR_X, numArgs: 0, tokenLiteral: "x", glslEmitter: glslLiteral("x")},
     {type: TerminalType.VAR_Y, numArgs: 0, tokenLiteral: "y", glslEmitter: glslLiteral("y")},
     {type: TerminalType.VAR_T, numArgs: 0, tokenLiteral: "t", glslEmitter: glslLiteral("t")},
+    {type: TerminalType.OP_INV, numArgs: 1, tokenLiteral: "inv", glslEmitter: glslFn("inv")},
     {type: TerminalType.OP_ADD, numArgs: 2, tokenLiteral: "+", glslEmitter: glslInfix("+")},
     {type: TerminalType.OP_SUB, numArgs: 2, tokenLiteral: "-", glslEmitter: glslInfix("-")},
     {type: TerminalType.OP_MUL, numArgs: 2, tokenLiteral: "*", glslEmitter: glslInfix("*")},
@@ -76,6 +85,11 @@ const TERMINALS: List<TerminalMetadata> = List.of<TerminalMetadata>(
     {type: TerminalType.OP_FLOOR, numArgs: 1, tokenLiteral: "floor", glslEmitter: glslFn("floor")},
     {type: TerminalType.OP_CEIL, numArgs: 1, tokenLiteral: "ceil", glslEmitter: glslFn("ceil")},
     {type: TerminalType.OP_ROUND, numArgs: 1, tokenLiteral: "round", glslEmitter: glslFn("round")},
+    {type: TerminalType.OP_TRUNC, numArgs: 1, tokenLiteral: "trunc", glslEmitter: glslFn("trunc")},
+    {type: TerminalType.OP_MIN, numArgs: 2, tokenLiteral: "min", glslEmitter: glslFn("min")},
+    {type: TerminalType.OP_MAX, numArgs: 2, tokenLiteral: "max", glslEmitter: glslFn("max")},
+    {type: TerminalType.OP_CLIP, numArgs: 1, tokenLiteral: "clip", glslEmitter: glslFn("clip")},
+    {type: TerminalType.OP_WRAP, numArgs: 1, tokenLiteral: "wrap", glslEmitter: glslFn("wrap")},
     {type: TerminalType.OP_USHIFT, numArgs: 1, tokenLiteral: "ushift", glslEmitter: glslFn("ushift")},
     {type: TerminalType.OP_RGB, numArgs: 3, tokenLiteral: "rgb", glslEmitter: glslFn("rgb")},
     {type: TerminalType.OP_BW, numArgs: 1, tokenLiteral: "bw", glslEmitter: glslFn("bw")},

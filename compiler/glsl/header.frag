@@ -5,12 +5,28 @@ uniform float time;
 
 vec3 expression(vec3 x, vec3 y, vec3 t);
 
+vec3 inv(vec3 v) {
+    return -v;
+}
+
 vec3 logb(vec3 x, vec3 b) {
     return log(x) / log(b);
 }
 
 vec3 round(vec3 v) {
     return floor(0.5 + v);
+}
+
+vec3 trunc(vec3 v) {
+    return vec3(int(v.x), int(v.y), int(v.z));
+}
+
+vec3 clip(vec3 v) {
+    return max(min(v, 1.0), -1.0);
+}
+
+vec3 wrap(vec3 v) {
+    return mod(v + 1.0, vec3(3.0)) - 1.0;
 }
 
 vec3 ushift(vec3 v) {
