@@ -42,6 +42,8 @@ export enum TerminalType {
     OP_WRAP = "OP_WRAP",
     OP_USHIFT = "OP_USHIFT",
 
+    OP_BLEND = "OP_BLEND",
+
     OP_RGB = "OP_RGB",
     OP_BW = "OP_BW",
 }
@@ -96,6 +98,7 @@ const TERMINALS: List<TerminalMetadata> = List.of<TerminalMetadata>(
     {type: TerminalType.OP_CLIP, numArgs: 1, tokenLiteral: "clip", glslEmitter: glslFn("clip")},
     {type: TerminalType.OP_WRAP, numArgs: 1, tokenLiteral: "wrap", glslEmitter: glslFn("wrap")},
     {type: TerminalType.OP_USHIFT, numArgs: 1, tokenLiteral: "ushift", glslEmitter: glslFn("ushift")},
+    {type: TerminalType.OP_BLEND, numArgs: 3, tokenLiteral: "blend", glslEmitter: glslFn("blend")},
     {type: TerminalType.OP_RGB, numArgs: 3, tokenLiteral: "rgb", glslEmitter: glslFn("rgb")},
     {type: TerminalType.OP_BW, numArgs: 1, tokenLiteral: "bw", glslEmitter: glslFn("bw")},
 );

@@ -37,6 +37,12 @@ vec3 ushift(vec3 v) {
     return (v + 1.0) / 2.0;
 }
 
+// fac * a + (1 - fac) * b
+// TODO: Consider clipping fac to [0, 1]
+vec3 blend(vec3 a, vec3 b, vec3 fac) {
+    return (fac * a) + ((vec3(1.0) - fac) * b);
+}
+
 vec3 rgb(vec3 r, vec3 g, vec3 b) {
     return vec3(r.x, g.x, b.x);
 }
