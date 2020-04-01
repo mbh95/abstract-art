@@ -9,6 +9,10 @@ vec3 inv(vec3 v) {
     return -v;
 }
 
+vec3 dotp(vec3 a, vec3 b) {
+    return vec3(dot(a, b));
+}
+
 vec3 logb(vec3 x, vec3 b) {
     return log(x) / log(b);
 }
