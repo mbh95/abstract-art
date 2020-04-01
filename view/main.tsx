@@ -5,6 +5,7 @@ import {emitGlsl} from "../compiler/emitter";
 
 interface MainProps {
     readonly src: string;
+    readonly periodSeconds: number;
 }
 
 interface MainState {
@@ -85,6 +86,7 @@ class Main extends Component<MainProps, MainState> {
         const curTime = (new Date()).getTime();
         const elapsedMillis = curTime - this.state.startTimeMillis;
         const elapsedSeconds = elapsedMillis / 1000.0;
+        const timeVal = (elapsedSeconds % this.props.periodSeconds) / this.props.periodSeconds;
 
         // update time
         this.setState({
@@ -92,7 +94,7 @@ class Main extends Component<MainProps, MainState> {
         });
 
         const timeLoc = glCtx.getUniformLocation(this.state.program!, "time");
-        glCtx.uniform1f(timeLoc, elapsedSeconds);
+        glCtx.uniform1f(timeLoc, timeVal);
 
         // render
         glCtx.drawArrays(glCtx.TRIANGLE_STRIP, 0, 4);

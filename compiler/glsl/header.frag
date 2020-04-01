@@ -1,6 +1,8 @@
 precision highp float;
 
+// (x, y) coordinates expected to be varying from [-1, 1]
 varying vec2 pos;
+// time expected to be varying from [0, 1]
 uniform float time;
 
 vec3 expression(vec3 x, vec3 y, vec3 t);

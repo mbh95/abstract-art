@@ -26,7 +26,7 @@ class DynamicView extends Component<DynamicViewProps, DynamicViewState> {
     render() {
         return (
             <div>
-                <Main src={this.state.src}/>
+                <Main src={this.state.src} periodSeconds={5.0}/>
                 <textarea rows={8} value={this.state.src} onChange={this.handleChange}/>
             </div>
         );
