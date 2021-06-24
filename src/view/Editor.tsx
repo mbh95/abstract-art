@@ -25,5 +25,5 @@ export default function Editor(props: { readonly initialSrc?: string }) {
 }
 
 Editor.defaultProps = {
-    initialSrc: "rgb x y t",
+    initialSrc: "",
 }
