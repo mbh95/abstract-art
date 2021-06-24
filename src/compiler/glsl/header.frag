@@ -57,8 +57,6 @@ void main() {
     vec3 x = vec3(pos.x);
     vec3 y = vec3(pos.y);
     vec3 t = vec3(time, time, time);
-    vec3 res = expression(x, y, t);
-    // TODO: Explore other ways to map R3->RGB
-    vec3 rgb = ushift(res);
+    vec3 rgb = expression(x, y, t);
     gl_FragColor = vec4(rgb, 1.0);
 }
