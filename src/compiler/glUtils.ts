@@ -1,5 +1,7 @@
-import defaultVert from "raw-loader!./glsl/default.vert";
-import defaultFrag from "raw-loader!./glsl/default.frag";
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import defaultVert from "!raw-loader!./glsl/default.vert";
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import defaultFrag from "!raw-loader!./glsl/default.frag";
 
 function createShader(
     gl: WebGLRenderingContext, type: GLenum, source: string): WebGLShader | null {
@@ -11,8 +13,8 @@ function createShader(
     if (success) {
         return shader;
     }
-    console.error(`Failed to compile ${type == gl.FRAGMENT_SHADER ? "FRAGMENT_SHADER" : (type
-    == gl.VERTEX_SHADER
+    console.error(`Failed to compile ${type === gl.FRAGMENT_SHADER ? "FRAGMENT_SHADER" : (type
+    === gl.VERTEX_SHADER
         ? "VERTEX_SHADER" : "UNKNOWN SHADER TYPE")}:`);
     console.error(source);
     console.error(gl.getShaderInfoLog(shader));
@@ -23,9 +25,9 @@ function createShader(
 export function createProgram(
     gl: WebGLRenderingContext, fragmentShaderSrc?: string, vertexShaderSrc?: string): WebGLProgram | null {
     const program: WebGLProgram = gl.createProgram()!;
-    const vertexShader: WebGLShader | null = createShader(gl, gl.VERTEX_SHADER, vertexShaderSrc? vertexShaderSrc : defaultVert);
+    const vertexShader: WebGLShader | null = createShader(gl, gl.VERTEX_SHADER, vertexShaderSrc ? vertexShaderSrc : defaultVert);
     const fragmentShader: WebGLShader | null = createShader(
-        gl, gl.FRAGMENT_SHADER, fragmentShaderSrc? fragmentShaderSrc : defaultFrag);
+        gl, gl.FRAGMENT_SHADER, fragmentShaderSrc ? fragmentShaderSrc : defaultFrag);
 
     if (!vertexShader || !fragmentShader) {
         gl.deleteProgram(program);

@@ -1,4 +1,4 @@
-import {TerminalMetadata, recognizeTerminal} from "./expression";
+import {recognizeTerminal, TerminalMetadata} from "./expression";
 
 export enum TokenType {
     PAREN_OPEN = "PAREN_OPEN",
@@ -32,11 +32,11 @@ function isWhitespace(s: string): boolean {
 }
 
 function isOpenParen(c: string): boolean {
-    return c == "(";
+    return c === "(";
 }
 
 function isCloseParen(c: string): boolean {
-    return c == ")";
+    return c === ")";
 }
 
 function isParen(c: string): boolean {
@@ -103,7 +103,7 @@ export class Scanner {
             if (nextChar === undefined || isWhitespace(nextChar)) {
                 terminated = true;
                 break;
-            } else if(isParen(nextChar)) {
+            } else if (isParen(nextChar)) {
                 // Rewind by one char because we need to tokenize the delimiter in the case of parentheses.
                 this.prevChar();
                 terminated = true;

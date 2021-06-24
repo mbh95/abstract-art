@@ -1,4 +1,5 @@
-import header from "raw-loader!./glsl/header.frag";
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import header from "!raw-loader!./glsl/header.frag";
 import {Expression, TERMINALS_MAP} from "./expression";
 
 export function glslLiteral(literal: string): (exp: Expression) => string {
