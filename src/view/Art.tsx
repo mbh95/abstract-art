@@ -1,10 +1,10 @@
 import {useCallback, useEffect, useRef, useState} from "react";
-import {parse} from "../compiler/parser";
 import {emitGlsl} from "../compiler/emitter";
 import {createProgram} from "../compiler/glUtils";
+import Expression from "../compiler/expression";
 
 export default function Art(props: {
-    readonly src: string;
+    readonly expression?: Expression;
     readonly periodSeconds: number;
 }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -27,14 +27,12 @@ export default function Art(props: {
         gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
     }, []);
 
-    // Recompile the program when src changes.
+    // Recompile the program when expression changes.
     useEffect(() => {
         const canvas = canvasRef.current!;
         const gl: WebGLRenderingContext = canvas.getContext("webgl")!;
         try {
-            console.log(props.src);
-            const ast = parse(props.src);
-            const fragSrc = emitGlsl(ast);
+            const fragSrc = emitGlsl(props.expression!);
             glProgram.current = createProgram(gl, fragSrc);
         } catch (e) {
             console.error(e);
@@ -46,7 +44,7 @@ export default function Art(props: {
         gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(positionLoc);
 
-    }, [props.src]);
+    }, [props.expression]);
 
 
     // Update time callback.
@@ -65,7 +63,7 @@ export default function Art(props: {
         return () => {
             cancelAnimationFrame(animationRequest.current);
         };
-    }, [props.src, props.periodSeconds, update]);
+    }, [props.expression, props.periodSeconds, update]);
 
     // Render on time passing or recompile.
     useEffect(() => {
@@ -79,7 +77,7 @@ export default function Art(props: {
         gl.uniform1f(glUniformTime, time);
 
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    }, [props.src, time]);
+    }, [props.expression, time]);
 
     return (<div className="Art">
         <canvas ref={canvasRef}/>
@@ -87,6 +85,6 @@ export default function Art(props: {
 }
 
 Art.defaultProps = {
-    src: "",
+    expr: undefined,
     periodSeconds: 5,
 }

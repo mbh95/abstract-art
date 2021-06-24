@@ -43,4 +43,3 @@ export default class Expression {
         return crossHelper(this);
     }
 }
-
