@@ -1,7 +1,7 @@
 import Art from "./Art";
 import React, {useState} from "react";
 
-export default function Editor(props: { initialSrc: string }) {
+export default function Editor(props: { initialSrc: string}) {
     const [src, setSrc] = useState(props.initialSrc);
     return <div className="Editor">
         <Art src={src}/>

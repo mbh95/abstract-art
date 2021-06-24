@@ -2,6 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Editor from "./view/Editor";
 import "./index.css";
+import {parse} from "./compiler/parser";
+
+const e = parse("+ x * y 123123");
+console.log(...e.flatten());
+console.log(e.toString());
+console.log(e.randomSubExpression().toString());
+console.log(e.cross(e).toString());
+
 
 ReactDOM.render(
     <div>

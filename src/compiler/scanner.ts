@@ -1,4 +1,4 @@
-import {recognizeTerminal, TerminalMetadata} from "./expression";
+import {recognizeTerminal, TerminalMetadata} from "./terminals";
 
 export enum TokenType {
     PAREN_OPEN = "PAREN_OPEN",

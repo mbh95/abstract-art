@@ -1,5 +1,6 @@
 import {Scanner, Token, TokenType} from "./scanner";
-import {Expression} from "./expression";
+import Expression from "./expression";
+import {List} from "immutable";
 
 /**
  * Parse a string representing an expression into an Expression AST.
@@ -60,9 +61,8 @@ function parseTerminalAndArgList(token: Token, scan: Scanner): Expression {
     for (let i = 0; i < token.terminalMetadata.numArgs; i++) {
         args.push(parseExpression(scan));
     }
-    return {
-        type: token.terminalMetadata.type,
-        name: token.val,
-        args
-    };
+    return new Expression(
+        token.terminalMetadata.type,
+        token.val,
+        List.of(...args));
 }
