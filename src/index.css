@@ -13,6 +13,7 @@ textarea {
     transition: transform .1s; /* Animation */
     width: 200px;
     height: 200px;
+    flex-basis: 30%
 }
 
 .Art canvas {
@@ -21,13 +22,20 @@ textarea {
     border-radius: 15px;
     overflow: hidden;
     filter: drop-shadow(5px 5px 8px #000000);
-
 }
 
-.Art:hover {
-    transform: scale(1.1); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+/*.Deselected .Art:hover {*/
+/*    transform: scale(1.1);*/
+/*}*/
+
+.Selected .Art {
+    transform: scale(1.1)
 }
 
 .Editor {
     display: flex;
+}
+
+.GalleryHeader button{
+    margin: 10px;
 }

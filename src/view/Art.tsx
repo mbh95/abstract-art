@@ -1,10 +1,10 @@
 import {useCallback, useEffect, useRef, useState} from "react";
 import {emitGlsl} from "../compiler/emitter";
 import {createProgram} from "../compiler/glUtils";
-import Expression from "../compiler/expression";
+import {parse} from "../compiler/parser";
 
 export default function Art(props: {
-    readonly expression?: Expression;
+    readonly src: string;
     readonly periodSeconds: number;
 }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -32,7 +32,8 @@ export default function Art(props: {
         const canvas = canvasRef.current!;
         const gl: WebGLRenderingContext = canvas.getContext("webgl")!;
         try {
-            const fragSrc = emitGlsl(props.expression!);
+            const expr = parse(props.src);
+            const fragSrc = emitGlsl(expr);
             glProgram.current = createProgram(gl, fragSrc);
         } catch (e) {
             console.error(e);
@@ -44,7 +45,7 @@ export default function Art(props: {
         gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(positionLoc);
 
-    }, [props.expression]);
+    }, [props.src]);
 
 
     // Update time callback.
@@ -63,7 +64,7 @@ export default function Art(props: {
         return () => {
             cancelAnimationFrame(animationRequest.current);
         };
-    }, [props.expression, props.periodSeconds, update]);
+    }, [props.src, props.periodSeconds, update]);
 
     // Render on time passing or recompile.
     useEffect(() => {
@@ -77,7 +78,7 @@ export default function Art(props: {
         gl.uniform1f(glUniformTime, time);
 
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    }, [props.expression, time]);
+    }, [props.src, time]);
 
     return (<div className="Art">
         <canvas ref={canvasRef}/>
