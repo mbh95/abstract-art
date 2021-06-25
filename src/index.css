@@ -24,7 +24,7 @@ textarea {
     filter: drop-shadow(5px 5px 8px #000000);
 }
 
-.Deselected .Art:hover {
+.Deselected .Art canvas:hover {
     transform: scale(1.05);
 }
 
@@ -32,8 +32,6 @@ textarea {
     transform: scale(1.1);
     filter: drop-shadow(5px 5px 8px yellow);
 }
-
-
 
 .Editor {
     display: flex;
