@@ -20,7 +20,7 @@ const createArt = (index: number, textSource: string) => {
     }
 };
 
-const GENERATION_SIZE = 6;
+const GENERATION_SIZE = 12;
 
 const createFirstGeneration = () => {
     const pieces: ArtState[] = [];
