@@ -1,3 +1,13 @@
+#define F_PI 3.14159
+#define F_TAU 6.28318
+#define F_E 2.71828
+#define F_PHI 1.61803
+
+#define PI vec3(F_PI, F_PI, F_PI)
+#define TAU vec3(F_TAU, F_TAU, F_TAU)
+#define E vec3(F_E, F_E, F_E)
+#define PHI vec3(F_PHI, F_PHI, F_PHI)
+
 precision highp float;
 
 // (x, y) coordinates expected to be varying from [-1, 1]

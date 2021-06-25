@@ -4,6 +4,10 @@ import Expression from "./expression";
 
 export enum TerminalType {
     CONST = "CONST",
+    CONST_PI = "CONST_PI",
+    CONST_TAU = "CONST_TAU",
+    CONST_E = "CONST_E",
+    CONST_PHI = "CONST_PHI",
 
     VAR_X = "VAR_X",
     VAR_Y = "VAR_Y",
@@ -58,13 +62,17 @@ export interface TerminalMetadata {
     readonly glslEmitter: (exp: Expression) => string;
 }
 
-const TERMINALS: List<TerminalMetadata> = List.of<TerminalMetadata>(
+export const TERMINALS: List<TerminalMetadata> = List.of<TerminalMetadata>(
     {
         type: TerminalType.CONST,
         numArgs: 0,
         tokenRegExp: /^-?\d+(\.\d+)?$/,
         glslEmitter: (exp) => `vec3(${exp.name}, ${exp.name}, ${exp.name})`
     },
+    {type: TerminalType.CONST_PI, numArgs: 0, tokenLiteral: "pi", glslEmitter: glslLiteral("PI")},
+    {type: TerminalType.CONST_TAU, numArgs: 0, tokenLiteral: "tau", glslEmitter: glslLiteral("TAU")},
+    {type: TerminalType.CONST_E, numArgs: 0, tokenLiteral: "e", glslEmitter: glslLiteral("E")},
+    {type: TerminalType.CONST_PHI, numArgs: 0, tokenLiteral: "phi", glslEmitter: glslLiteral("PHI")},
     {type: TerminalType.VAR_X, numArgs: 0, tokenLiteral: "x", glslEmitter: glslLiteral("x")},
     {type: TerminalType.VAR_Y, numArgs: 0, tokenLiteral: "y", glslEmitter: glslLiteral("y")},
     {type: TerminalType.VAR_T, numArgs: 0, tokenLiteral: "t", glslEmitter: glslLiteral("t")},
