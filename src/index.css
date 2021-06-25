@@ -24,13 +24,16 @@ textarea {
     filter: drop-shadow(5px 5px 8px #000000);
 }
 
-/*.Deselected .Art:hover {*/
-/*    transform: scale(1.1);*/
-/*}*/
-
-.Selected .Art {
-    transform: scale(1.1)
+.Deselected .Art:hover {
+    transform: scale(1.05);
 }
+
+.Selected .Art canvas {
+    transform: scale(1.1);
+    filter: drop-shadow(5px 5px 8px yellow);
+}
+
+
 
 .Editor {
     display: flex;
