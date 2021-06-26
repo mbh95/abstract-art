@@ -2,6 +2,7 @@
   "name": "abstract-art",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://mbh95.github.io/abstract-art/",
   "dependencies": {
     "@reduxjs/toolkit": "^1.6.0",
     "@testing-library/jest-dom": "^5.14.1",
@@ -25,7 +26,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -49,5 +51,8 @@
     "moduleNameMapper": {
       "\\.(frag|vert)$": "<rootDir>/__mocks__/mocks.js"
     }
+  },
+  "devDependencies": {
+    "gh-pages": "^3.2.3"
   }
 }
