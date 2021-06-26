@@ -1,5 +1,5 @@
 import {List, Map} from "immutable";
-import {glslFn, glslInfix, glslLiteral} from "./emitter";
+import {glslFn, glslInfix, glslLiteral} from "./glslEmitter";
 import Expression from "./expression";
 
 export enum TerminalType {

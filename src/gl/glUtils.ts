@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import defaultVert from "!raw-loader!./glsl/default.vert";
+import defaultVert from "!raw-loader!../expressions/glsl/default.vert";
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import defaultFrag from "!raw-loader!./glsl/default.frag";
+import defaultFrag from "!raw-loader!../expressions/glsl/default.frag";
 
 function createShader(
     gl: WebGLRenderingContext, type: GLenum, source: string): WebGLShader | null {

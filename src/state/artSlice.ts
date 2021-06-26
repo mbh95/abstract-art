@@ -1,6 +1,8 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {parse} from "../compiler/parser";
-import Expression, {randomExpression} from "../compiler/expression";
+import {parse} from "../expressions/parser";
+import Expression, {} from "../expressions/expression";
+import {randomExpression} from "../expressions/generator";
+import {cross} from "../expressions/evolve";
 
 export interface ArtState {
     index: number;
@@ -25,7 +27,7 @@ const GENERATION_SIZE = 12;
 const createFirstGeneration = () => {
     const pieces: ArtState[] = [];
     for (let i = 0; i < GENERATION_SIZE; i++) {
-        pieces.push(createArt(i, randomExpression(10).toString()));
+        pieces.push(createArt(i, randomExpression(5).toString()));
     }
     console.log(pieces);
     return {
@@ -51,11 +53,11 @@ const createNextGeneration = (prevGeneration: GenerationState) => {
     for (let i = 0; i < GENERATION_SIZE; i++) {
         const parent1 = selected[Math.floor(Math.random() * selected.length)];
         const parent2 = selected[Math.floor(Math.random() * selected.length)];
-        let child = parent1.cross(parent2);
+        let child = cross(parent1, parent2);
         // 1 to 5 mutations
-        for (let m = 0; m < Math.floor(Math.random()*5) + 1; m++) {
-            child = child.mutate();
-        }
+        // for (let m = 0; m < Math.floor(Math.random()*5) + 1; m++) {
+        //     child = mutate(child);
+        // }
         children.push(createArt(i, child.toString()));
     }
 

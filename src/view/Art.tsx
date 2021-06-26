@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useRef, useState} from "react";
-import {emitGlsl} from "../compiler/emitter";
-import {createProgram} from "../compiler/glUtils";
-import {parse} from "../compiler/parser";
+import {emitGlsl} from "../expressions/glslEmitter";
+import {createProgram} from "../gl/glUtils";
+import {parse} from "../expressions/parser";
 
 export default function Art(props: {
     readonly src: string;
