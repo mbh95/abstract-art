@@ -8,4 +8,4 @@ Inspired by the [battle backgrounds](https://www.gjtorikian.com/Earthbound-Battl
 # Play with it here:
 https://mbh95.github.io/abstract-art/
 
-##TODO: Add descriptions of expression syntax and operators
+## TODO: Add descriptions of expression syntax and operators
