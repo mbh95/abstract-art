@@ -1,5 +1,8 @@
 body {
     background-color: #3e607f;
+    font-family: Arial;
+    font-size: 20px;
+    color: white;
 }
 
 textarea {
