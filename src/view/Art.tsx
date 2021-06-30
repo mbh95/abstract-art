@@ -2,8 +2,8 @@ import {parse} from "../expressions/parser";
 import {emitGlsl} from "../expressions/glslEmitter";
 import {createProgram} from "../gl/glUtils";
 import {createRef, useEffect, useState} from "react";
-import {ArtState, toggleSelected} from "../state/gallerySlice";
-import {useDispatch} from "react-redux";
+import {ArtState, selectSettings, toggleSelected} from "../state/gallerySlice";
+import {useDispatch, useSelector} from "react-redux";
 
 export default function Art(props: {
     art: ArtState,
@@ -13,7 +13,7 @@ export default function Art(props: {
 }) {
     const frameRef = createRef<HTMLDivElement>();
     const [glProgram, setGlProgram] = useState<WebGLProgram | null>(null);
-
+    const settings = useSelector(selectSettings);
     const dispatch = useDispatch();
 
     // Compile gl program.
@@ -46,7 +46,7 @@ export default function Art(props: {
                 const height = rect.bottom - rect.top;
                 const left = rect.left - 8;
                 const bottom = glCanvas.clientHeight - rect.bottom;
-                const pixelRatio = window.devicePixelRatio || 1;
+                const pixelRatio = settings.highDpiSupport ? window.devicePixelRatio || 1 : 1;
 
                 gl.viewport(left * pixelRatio, bottom * pixelRatio, width * pixelRatio, height * pixelRatio);
                 gl.scissor(left * pixelRatio, bottom * pixelRatio, width * pixelRatio, height * pixelRatio);

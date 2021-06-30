@@ -1,14 +1,14 @@
 import React, {useEffect, useRef} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {createArtState, selectArt, setAllArt} from "../state/gallerySlice";
+import {createArtState, selectArt, selectSettings, setAllArt} from "../state/gallerySlice";
 import "./Gallery.css";
 import {generateRandomArt} from "./App";
 import Art from "./Art";
 import {parse} from "../expressions/parser";
 import {breed} from "../expressions/evolve";
 
-function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement): boolean {
-    const pixelRatio = window.devicePixelRatio || 1;
+function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement, highDpi: boolean): boolean {
+    const pixelRatio = highDpi ? window.devicePixelRatio || 1 : 1;
     // Lookup the size the browser is displaying the canvas in CSS pixels.
     const displayWidth = canvas.clientWidth * pixelRatio;
     const displayHeight = canvas.clientHeight * pixelRatio;
@@ -27,6 +27,7 @@ function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement): boolean {
 
 export default function Gallery(props: { getGlContext: () => WebGLRenderingContext }) {
     const time = useRef<number>(0);
+    const settings = useSelector(selectSettings);
     const art = useSelector(selectArt);
     const frames = useSelector(selectArt)
         .map((art, i) =>
@@ -39,19 +40,20 @@ export default function Gallery(props: { getGlContext: () => WebGLRenderingConte
 
     // Set up OpenGL.
     useEffect(() => {
+        let animationRequest = 0;
         const startTime = performance.now();
         const gl = props.getGlContext();
         const glCanvas = gl.canvas as HTMLCanvasElement;
         const render = () => {
             time.current = (((performance.now() - startTime) / 1000) / 5) % 1;
-            resizeCanvasToDisplaySize(glCanvas);
+            resizeCanvasToDisplaySize(glCanvas, settings.highDpiSupport);
             gl.enable(gl.CULL_FACE);
             gl.enable(gl.DEPTH_TEST);
             gl.enable(gl.SCISSOR_TEST);
 
             // move the canvas to top of the current scroll position
             (gl.canvas as HTMLCanvasElement).style.transform = `translateY(${window.scrollY}px) translateX(${window.scrollX}px)`;
-            requestAnimationFrame(render);
+            animationRequest = requestAnimationFrame(render);
         }
         const positionBuffer = gl.createBuffer();
         const vertices = new Float32Array([
@@ -62,7 +64,10 @@ export default function Gallery(props: { getGlContext: () => WebGLRenderingConte
         ]);
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-        requestAnimationFrame(render);
+        animationRequest = requestAnimationFrame(render);
+        return () => {
+            cancelAnimationFrame(animationRequest);
+        }
     }, [props.getGlContext]);
 
     return (

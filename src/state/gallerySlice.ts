@@ -2,7 +2,16 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 
 export interface GalleryState {
     art: ArtState[];
+    settings: SettingsState;
 }
+
+export interface SettingsState {
+    highDpiSupport: boolean;
+}
+
+const defaultSettings: SettingsState = {
+    highDpiSupport: true,
+};
 
 export interface ArtState {
     textSource: string;
@@ -37,9 +46,13 @@ export interface SelectArtActionPayload {
     index: number;
 }
 
+export interface UpdateSettingsActionPayload {
+    newSettings: SettingsState;
+}
+
 export const gallerySlice = createSlice({
     name: 'gallery',
-    initialState: {art: [] as ArtState[]} as GalleryState,
+    initialState: {art: [] as ArtState[], settings: defaultSettings} as GalleryState,
     reducers: {
         addArt: (state, event: PayloadAction<AddArtActionPayload>) => {
             state.art.push(createArtState(event.payload.newSource));
@@ -55,11 +68,15 @@ export const gallerySlice = createSlice({
         },
         toggleSelected: (state, event: PayloadAction<SelectArtActionPayload>) => {
             state.art[event.payload.index].selected = !state.art[event.payload.index].selected;
-        }
+        },
+        updateSettings: (state, event: PayloadAction<UpdateSettingsActionPayload>) => {
+          state.settings = event.payload.newSettings;
+        },
     }
 })
 
-export const {addArt, editArt, setAllArt, deleteArt, toggleSelected} = gallerySlice.actions
+export const {addArt, editArt, setAllArt, deleteArt, toggleSelected, updateSettings} = gallerySlice.actions
 export const selectArt = (state: { gallery: GalleryState }) => state.gallery.art;
+export const selectSettings = (state: { gallery: GalleryState }) => state.gallery.settings;
 
 export default gallerySlice.reducer

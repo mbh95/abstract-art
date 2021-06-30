@@ -1,7 +1,7 @@
 import Gallery from "./Gallery";
 import React, {useEffect, useRef} from "react";
-import {useDispatch} from "react-redux";
-import {ArtState, createArtState, setAllArt} from "../state/gallerySlice";
+import {useDispatch, useSelector} from "react-redux";
+import {ArtState, createArtState, selectSettings, setAllArt, updateSettings} from "../state/gallerySlice";
 import {randomExpression} from "../expressions/generator";
 import "./App.css";
 
@@ -15,10 +15,11 @@ export function generateRandomArt(n = 15): ArtState[] {
 
 export default function App() {
     const canvas = useRef<HTMLCanvasElement>(null);
+    const settings = useSelector(selectSettings);
     const dispatch = useDispatch();
 
     const getGlContext = () => {
-        return canvas.current!.getContext('webgl', { antialias: true })!;
+        return canvas.current!.getContext('webgl', { antialias: false })!;
     }
 
     // Generate initial functions.
@@ -27,6 +28,7 @@ export default function App() {
     }, [dispatch]);
     return (<div>
         <canvas ref={canvas} id="glCanvas"/>
+        <button onClick={()=>dispatch(updateSettings({newSettings: {highDpiSupport: !settings.highDpiSupport}}))}>Toggle High DPI</button>
         <Gallery getGlContext={getGlContext}/>
         <div>
             <i>"This art may not make sense to you. It makes Ness sleepy just thinking about it. Use Paralysis to knock
