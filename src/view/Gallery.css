@@ -1,20 +1,12 @@
 .ArtFrame {
     width: 250px;
     height: 250px;
-    /*flex-basis: 30%;*/
-    /*filter: drop-shadow(5px 5px 8px #000000);*/
-    margin-left: 20px;
-    margin-top: 20px;
-    outline-color: yellow;
+    margin-left: 40px;
+    margin-top: 40px;
+}
+
+.ArtFrame.Selected {
+    transform: scale(1.1);
     outline-style: solid;
-    transition: transform .1s; /* Animation */
-}
-
-.Deselected .ArtFrame:hover {
-    transform: scale(1.05);
-}
-
-.Selected .Art canvas {
-    /*transform: scale(1.1);*/
-    /*filter: drop-shadow(5px 5px 8px yellow);*/
+    outline-color: yellow;
 }

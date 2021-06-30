@@ -5,15 +5,7 @@ export interface GalleryState {
 }
 
 export interface ArtState {
-    index: number;
     textSource: string;
-}
-
-export function createArt(index: number, textSource: string): ArtState {
-    return {
-        index,
-        textSource,
-    };
 }
 
 export interface AddArtActionPayload {
@@ -38,7 +30,7 @@ export const gallerySlice = createSlice({
     initialState: {art: [] as ArtState[]} as GalleryState,
     reducers: {
         addArt: (state, event: PayloadAction<AddArtActionPayload>) => {
-            state.art.push(createArt(state.art.length, event.payload.newSource));
+            state.art.push({textSource: event.payload.newSource});
         },
         editArt: (state, event: PayloadAction<EditArtActionPayload>) => {
             state.art[event.payload.index].textSource = event.payload.newSource;
@@ -48,9 +40,6 @@ export const gallerySlice = createSlice({
         },
         deleteArt: (state, event: PayloadAction<DeleteArtActionPayload>) => {
             state.art.splice(event.payload.index, 1);
-            for (let i = 0; i < state.art.length; i++) {
-                state.art[i].index = i;
-            }
         },
     }
 })

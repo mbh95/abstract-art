@@ -1,16 +1,14 @@
 import Gallery from "./Gallery";
-import React, {createRef, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef} from "react";
 import {useDispatch} from "react-redux";
-import {ArtState, createArt, setAllArt} from "../state/gallerySlice";
+import {ArtState, setAllArt} from "../state/gallerySlice";
 import {randomExpression} from "../expressions/generator";
 import "./App.css";
 
 export function generateRandomArt(n = 18): ArtState[] {
-    console.log("Generating new generation");
     const newArt = [];
     for (let i = 0; i < n; i++) {
-        newArt.push(createArt(0, randomExpression(10).toString()));
-        console.log(i);
+        newArt.push({textSource: randomExpression(10).toString()});
     }
     return newArt;
 }

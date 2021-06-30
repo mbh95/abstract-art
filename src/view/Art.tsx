@@ -1,9 +1,11 @@
 import {parse} from "../expressions/parser";
 import {emitGlsl} from "../expressions/glslEmitter";
 import {createProgram} from "../gl/glUtils";
-import {createRef, useEffect, useRef, useState} from "react";
+import {createRef, useEffect, useState} from "react";
 
 export default function Art(props: {
+    getTime: () => number,
+    selected: boolean,
     getGlContext: () => WebGLRenderingContext,
     src: string,
     selectCallback: () => void,
@@ -48,9 +50,8 @@ export default function Art(props: {
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
                 gl.useProgram(glProgram);
 
-                const t = (((performance.now() - startTime) / 1000) / 5) % 1;
                 const glUniformTime = gl.getUniformLocation(glProgram!, "time");
-                gl.uniform1f(glUniformTime, t);
+                gl.uniform1f(glUniformTime, props.getTime());
 
                 const positionLoc = gl.getAttribLocation(glProgram!, "xy_pos");
                 gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
@@ -66,7 +67,7 @@ export default function Art(props: {
         }
     }, [frameRef, props, glProgram]);
 
-    return <div onClick={props.selectCallback}>
-        <div ref={frameRef} className="ArtFrame"/>
+    return <div ref={frameRef} className={"ArtFrame" + (props.selected ? " Selected" : " Deselected")}
+                onClick={props.selectCallback}>
     </div>
 }
