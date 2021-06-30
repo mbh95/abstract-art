@@ -6,6 +6,14 @@ export interface GalleryState {
 
 export interface ArtState {
     textSource: string;
+    selected: boolean;
+}
+
+export function createArtState(textSource: string): ArtState {
+    return {
+        textSource,
+        selected: false,
+    }
 }
 
 export interface AddArtActionPayload {
@@ -25,12 +33,16 @@ export interface DeleteArtActionPayload {
     index: number;
 }
 
+export interface SelectArtActionPayload {
+    index: number;
+}
+
 export const gallerySlice = createSlice({
     name: 'gallery',
     initialState: {art: [] as ArtState[]} as GalleryState,
     reducers: {
         addArt: (state, event: PayloadAction<AddArtActionPayload>) => {
-            state.art.push({textSource: event.payload.newSource});
+            state.art.push(createArtState(event.payload.newSource));
         },
         editArt: (state, event: PayloadAction<EditArtActionPayload>) => {
             state.art[event.payload.index].textSource = event.payload.newSource;
@@ -41,10 +53,13 @@ export const gallerySlice = createSlice({
         deleteArt: (state, event: PayloadAction<DeleteArtActionPayload>) => {
             state.art.splice(event.payload.index, 1);
         },
+        toggleSelected: (state, event: PayloadAction<SelectArtActionPayload>) => {
+            state.art[event.payload.index].selected = !state.art[event.payload.index].selected;
+        }
     }
 })
 
-export const {addArt, editArt, setAllArt, deleteArt} = gallerySlice.actions
+export const {addArt, editArt, setAllArt, deleteArt, toggleSelected} = gallerySlice.actions
 export const selectArt = (state: { gallery: GalleryState }) => state.gallery.art;
 
 export default gallerySlice.reducer

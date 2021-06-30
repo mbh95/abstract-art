@@ -1,14 +1,14 @@
 import Gallery from "./Gallery";
 import React, {useEffect, useRef} from "react";
 import {useDispatch} from "react-redux";
-import {ArtState, setAllArt} from "../state/gallerySlice";
+import {ArtState, createArtState, setAllArt} from "../state/gallerySlice";
 import {randomExpression} from "../expressions/generator";
 import "./App.css";
 
-export function generateRandomArt(n = 18): ArtState[] {
+export function generateRandomArt(n = 15): ArtState[] {
     const newArt = [];
     for (let i = 0; i < n; i++) {
-        newArt.push({textSource: randomExpression(10).toString()});
+        newArt.push(createArtState(randomExpression(10).toString()));
     }
     return newArt;
 }
@@ -18,7 +18,7 @@ export default function App() {
     const dispatch = useDispatch();
 
     const getGlContext = () => {
-        return canvas.current!.getContext("webgl")!;
+        return canvas.current!.getContext('webgl', { antialias: true })!;
     }
 
     // Generate initial functions.

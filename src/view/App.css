@@ -1,8 +1,11 @@
 #glCanvas {
+    /* Fill the screen */
     position: absolute;
     top: 0;
     width: 100vw;
     height: 100vh;
-    z-index: -1;
-    display: block;
+
+    /* Render on top of the entire page while not interacting with pointer events. */
+    z-index: 10;
+    pointer-events: none;
 }

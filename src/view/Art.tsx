@@ -2,16 +2,20 @@ import {parse} from "../expressions/parser";
 import {emitGlsl} from "../expressions/glslEmitter";
 import {createProgram} from "../gl/glUtils";
 import {createRef, useEffect, useState} from "react";
+import {ArtState, toggleSelected} from "../state/gallerySlice";
+import {useDispatch} from "react-redux";
 
 export default function Art(props: {
+    art: ArtState,
+    index: number,
     getTime: () => number,
-    selected: boolean,
     getGlContext: () => WebGLRenderingContext,
-    src: string,
-    selectCallback: () => void,
 }) {
     const frameRef = createRef<HTMLDivElement>();
     const [glProgram, setGlProgram] = useState<WebGLProgram | null>(null);
+
+    const dispatch = useDispatch();
+
     // Compile gl program.
     useEffect(() => {
         const gl = props.getGlContext();
@@ -19,14 +23,13 @@ export default function Art(props: {
             return;
         }
         console.log("Recompiling...");
-        const expression = parse(props.src)!;
+        const expression = parse(props.art.textSource)!;
         const fragSrc = emitGlsl(expression);
         setGlProgram(createProgram(gl, fragSrc));
-    }, [props.src, props.getGlContext]);
+    }, [props.art.textSource, props.getGlContext]);
 
     // Start rendering
     useEffect(() => {
-        const startTime = performance.now();
         const gl = props.getGlContext();
         const glCanvas = gl.canvas as HTMLCanvasElement;
 
@@ -67,7 +70,8 @@ export default function Art(props: {
         }
     }, [frameRef, props, glProgram]);
 
-    return <div ref={frameRef} className={"ArtFrame" + (props.selected ? " Selected" : " Deselected")}
-                onClick={props.selectCallback}>
+    return <div className={"ArtFrame" + (props.art.selected ? " Selected" : " Deselected")}>
+        <div ref={frameRef} className="ArtFrameClickTarget"
+             onClick={() => dispatch(toggleSelected({index: props.index}))}/>
     </div>
 }

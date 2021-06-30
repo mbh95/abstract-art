@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useEffect, useRef} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {selectArt, setAllArt} from "../state/gallerySlice";
+import {createArtState, selectArt, setAllArt} from "../state/gallerySlice";
 import "./Gallery.css";
 import {generateRandomArt} from "./App";
 import Art from "./Art";
@@ -25,17 +25,14 @@ function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement): boolean {
 }
 
 export default function Gallery(props: { getGlContext: () => WebGLRenderingContext }) {
-    const [selectedIndices, setSelectedIndices] = useState<Set<number>>(new Set());
     const time = useRef<number>(0);
     const art = useSelector(selectArt);
-    const frames = useSelector(selectArt).map((art, i) => <Art selected={selectedIndices.has(i)}
-                                                               getTime={()=>time.current}
-                                                               getGlContext={props.getGlContext} src={art.textSource}
-                                                               selectCallback={() => {
-                                                                   const newSet = new Set(selectedIndices);
-                                                                   selectedIndices.has(i) ? newSet.delete(i) : newSet.add(i);
-                                                                   setSelectedIndices(newSet);
-                                                               }}/>);
+    const frames = useSelector(selectArt)
+        .map((art, i) =>
+            <Art art={art}
+                 index={i}
+                 getTime={() => time.current}
+                 getGlContext={props.getGlContext}/>);
 
     const dispatch = useDispatch();
 
@@ -46,11 +43,11 @@ export default function Gallery(props: { getGlContext: () => WebGLRenderingConte
         const glCanvas = gl.canvas as HTMLCanvasElement;
         const render = () => {
             time.current = (((performance.now() - startTime) / 1000) / 5) % 1;
-            // setTime(t);
             resizeCanvasToDisplaySize(glCanvas);
             gl.enable(gl.CULL_FACE);
             gl.enable(gl.DEPTH_TEST);
             gl.enable(gl.SCISSOR_TEST);
+            gl.enable(gl.SAMPLES);
 
             // move the canvas to top of the current scroll position
             (gl.canvas as HTMLCanvasElement).style.transform = `translateY(${window.scrollY}px) translateX(${window.scrollX}px)`;
@@ -82,24 +79,18 @@ export default function Gallery(props: { getGlContext: () => WebGLRenderingConte
             <div className="Controls" style={{display: "flex"}}>
                 {/*<button onClick={() => dispatch(random())}>Random</button>*/}
                 <button onClick={() => {
-                    setSelectedIndices(new Set<number>());
                     dispatch(setAllArt({newArt: generateRandomArt()}));
                 }}>Start over
                 </button>
                 <button onClick={() => {
-                    const selectedPieces = art.filter((piece, i) => selectedIndices.has(i))
+                    const selectedPieces = art.filter((piece, i) => piece.selected)
                         .map(piece => parse(piece.textSource)!);
                     if (selectedPieces.length === 0) {
                         return;
                     }
                     const newArt = breed(selectedPieces, art.length)
-                        .map((expression, i) => {
-                            return {
-                                textSource: expression.toString()
-                            }
-                        });
+                        .map((expression, i) => createArtState(expression.toString()));
                     dispatch(setAllArt({newArt}));
-                    setSelectedIndices(new Set<number>());
                 }}>Breed selected
                 </button>
             </div>
