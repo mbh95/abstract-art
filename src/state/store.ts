@@ -1,8 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
-import artReducer from './artSlice'
-
+import galleryReducer from "./gallerySlice"
 export default configureStore({
     reducer: {
-        art: artReducer
+        gallery: galleryReducer
     }
 })

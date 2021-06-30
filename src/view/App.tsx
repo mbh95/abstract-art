@@ -1,23 +1,42 @@
 import Gallery from "./Gallery";
-import React from "react";
-import Editor from "./Editor";
+import React, {createRef, useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
+import {ArtState, createArt, setAllArt} from "../state/gallerySlice";
+import {randomExpression} from "../expressions/generator";
+import "./App.css";
+
+export function generateRandomArt(n = 18): ArtState[] {
+    console.log("Generating new generation");
+    const newArt = [];
+    for (let i = 0; i < n; i++) {
+        newArt.push(createArt(0, randomExpression(10).toString()));
+        console.log(i);
+    }
+    return newArt;
+}
 
 export default function App() {
+    const canvas = useRef<HTMLCanvasElement>(null);
+    const dispatch = useDispatch();
+
+    const getGlContext = () => {
+        return canvas.current!.getContext("webgl")!;
+    }
+
+    // Generate initial functions.
+    useEffect(() => {
+        dispatch(setAllArt({newArt: generateRandomArt()}));
+    }, [dispatch]);
     return (<div>
-        <Gallery />
+        <canvas ref={canvas} id="glCanvas"/>
+        <Gallery getGlContext={getGlContext}/>
         <div>
-            You can write your own expression below. Unfortunately it isn't selectable yet.
-        </div>
-        {/*<Editor initialSrc={"rgb\n(* (% x t) x)\n(% y t)\n(* x y)"}/>*/}
-        <Editor initialSrc={"rgb % t % x y * t * x y / t / x y"}/>
-        {/*<Editor initialSrc={"rgb (* (* t x) y) (* (- 1 t) (- x y)) (* (- 0.5 t) (- 1 x))"}/>*/}
-        {/*<Editor />*/}
-        <div>
-            <i>"This art may not make sense to you. It makes Ness sleepy just thinking about it. Use Paralysis to knock some sense into the painting."</i>
-                <br />
+            <i>"This art may not make sense to you. It makes Ness sleepy just thinking about it. Use Paralysis to knock
+                some sense into the painting."</i>
+            <br/>
             — EarthBound Player's Guide
         </div>
-        <br />
+        <br/>
         <div style={{color: "yellow"}}>
             UX developer wanted :)
         </div>

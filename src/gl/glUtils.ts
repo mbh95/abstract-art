@@ -5,7 +5,7 @@ import defaultFrag from "!raw-loader!../expressions/glsl/default.frag";
 
 function createShader(
     gl: WebGLRenderingContext, type: GLenum, source: string): WebGLShader | null {
-    console.log(source);
+    // console.log(source);
     const shader: WebGLShader = gl.createShader(type)!;
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
