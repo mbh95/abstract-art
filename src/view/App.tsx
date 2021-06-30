@@ -22,7 +22,7 @@ export default function App() {
         if (canvas.current === null) {
             return null;
         }
-        return canvas.current.getContext('webgl', { antialias: false });
+        return canvas.current.getContext('webgl', {antialias: false});
     }
 
     // Generate initial functions.
@@ -31,7 +31,6 @@ export default function App() {
     }, [dispatch]);
     return (<div>
         <canvas ref={canvas} id="glCanvas"/>
-        <button onClick={()=>dispatch(updateSettings({newSettings: {highDpiSupport: !settings.highDpiSupport}}))}>Toggle High DPI</button>
         <Gallery getGlContext={getGlContext}/>
         <div>
             <i>"This art may not make sense to you. It makes Ness sleepy just thinking about it. Use Paralysis to knock
@@ -46,5 +45,10 @@ export default function App() {
         <div style={{color: "blue"}}>
             <a href="https://github.com/mbh95/abstract-art">GitHub repo</a>
         </div>
+        <input type="checkbox"
+               name="highdpi"
+               onChange={(e) => dispatch(updateSettings({newSettings: {highDpiSupport: e.target.checked}}))}
+               checked={settings.highDpiSupport}/>
+        <label htmlFor="highdpi">High DPI Support</label>
     </div>);
 }
