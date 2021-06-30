@@ -5,7 +5,7 @@ import {ArtState, createArtState, selectSettings, setAllArt, updateSettings} fro
 import {randomExpression} from "../expressions/generator";
 import "./App.css";
 
-export function generateRandomArt(n = 15): ArtState[] {
+export function generateRandomArt(n = 21): ArtState[] {
     const newArt = [];
     for (let i = 0; i < n; i++) {
         newArt.push(createArtState(randomExpression(10).toString()));

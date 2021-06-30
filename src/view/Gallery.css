@@ -1,7 +1,7 @@
 .ArtFrame {
-    width: 250px;
-    height: 250px;
-    margin: 20px;
+    width: 200px;
+    height: 200px;
+    margin: 15px;
 }
 
 .ArtFrame.Selected {
