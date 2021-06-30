@@ -25,7 +25,7 @@ function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement, highDpi: boolean):
     return needResize;
 }
 
-export default function Gallery(props: { getGlContext: () => WebGLRenderingContext }) {
+export default function Gallery(props: { getGlContext: () => WebGLRenderingContext | null}) {
     const time = useRef<number>(0);
     const settings = useSelector(selectSettings);
     const art = useSelector(selectArt);
@@ -37,12 +37,14 @@ export default function Gallery(props: { getGlContext: () => WebGLRenderingConte
                  getGlContext={props.getGlContext}/>);
 
     const dispatch = useDispatch();
-
+    const gl = props.getGlContext();
     // Set up OpenGL.
     useEffect(() => {
+        if (gl === null) {
+            return;
+        }
         let animationRequest = 0;
         const startTime = performance.now();
-        const gl = props.getGlContext();
         const glCanvas = gl.canvas as HTMLCanvasElement;
         const render = () => {
             time.current = (((performance.now() - startTime) / 1000) / 5) % 1;
@@ -68,7 +70,7 @@ export default function Gallery(props: { getGlContext: () => WebGLRenderingConte
         return () => {
             cancelAnimationFrame(animationRequest);
         }
-    }, [props.getGlContext]);
+    }, [gl, settings.highDpiSupport]);
 
     return (
         <div className="Gallery">

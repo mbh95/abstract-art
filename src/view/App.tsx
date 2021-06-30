@@ -19,7 +19,10 @@ export default function App() {
     const dispatch = useDispatch();
 
     const getGlContext = () => {
-        return canvas.current!.getContext('webgl', { antialias: false })!;
+        if (canvas.current === null) {
+            return null;
+        }
+        return canvas.current.getContext('webgl', { antialias: false });
     }
 
     // Generate initial functions.

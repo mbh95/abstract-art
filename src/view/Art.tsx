@@ -9,28 +9,33 @@ export default function Art(props: {
     art: ArtState,
     index: number,
     getTime: () => number,
-    getGlContext: () => WebGLRenderingContext,
+    getGlContext: () => WebGLRenderingContext | null,
 }) {
     const frameRef = createRef<HTMLDivElement>();
     const [glProgram, setGlProgram] = useState<WebGLProgram | null>(null);
     const settings = useSelector(selectSettings);
     const dispatch = useDispatch();
 
+    const gl = props.getGlContext();
+    const source = props.art.textSource;
+    const getTime = props.getTime;
+
     // Compile gl program.
     useEffect(() => {
-        const gl = props.getGlContext();
         if (gl === null) {
             return;
         }
         console.log("Recompiling...");
-        const expression = parse(props.art.textSource)!;
+        const expression = parse(source)!;
         const fragSrc = emitGlsl(expression);
         setGlProgram(createProgram(gl, fragSrc));
-    }, [props.art.textSource, props.getGlContext]);
+    }, [gl, source]);
 
     // Start rendering
     useEffect(() => {
-        const gl = props.getGlContext();
+        if (gl === null) {
+            return;
+        }
         const glCanvas = gl.canvas as HTMLCanvasElement;
 
         let animationRequest = 0;
@@ -55,7 +60,7 @@ export default function Art(props: {
                 gl.useProgram(glProgram);
 
                 const glUniformTime = gl.getUniformLocation(glProgram!, "time");
-                gl.uniform1f(glUniformTime, props.getTime());
+                gl.uniform1f(glUniformTime, getTime());
 
                 const positionLoc = gl.getAttribLocation(glProgram!, "xy_pos");
                 gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
@@ -69,7 +74,7 @@ export default function Art(props: {
         return () => {
             cancelAnimationFrame(animationRequest);
         }
-    }, [frameRef, props, glProgram]);
+    }, [settings.highDpiSupport, frameRef, gl, glProgram, getTime]);
 
     return <div className={"ArtFrame" + (props.art.selected ? " Selected" : " Deselected")}>
         <div ref={frameRef} className="ArtFrameClickTarget"
