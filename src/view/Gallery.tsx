@@ -1,12 +1,9 @@
-import React, {createRef, useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {selectArt, setAllArt} from "../state/gallerySlice";
 import "./Gallery.css";
-import {createProgram} from "../gl/glUtils";
-import {parse} from "../expressions/parser";
-import {emitGlsl} from "../expressions/glslEmitter";
 import {generateRandomArt} from "./App";
-import {createSelector} from "@reduxjs/toolkit";
+import Art from "./Art";
 
 function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement): boolean {
     // Lookup the size the browser is displaying the canvas in CSS pixels.
@@ -28,41 +25,12 @@ function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement): boolean {
 export default function Gallery(props: { getGlContext: () => WebGLRenderingContext }) {
     const [selectedIndices, setSelectedIndices] = useState<Set<number>>(new Set());
 
-    const art = useSelector(selectArt);
-
-    const programs = createSelector(selectArt, (art) => {
-        return art.map((art, i) => {
-            const gl = props.getGlContext();
-            let glProgram: WebGLProgram | null = null;
-            if (gl !== null) {
-                console.log("Recompiling...");
-                const expression = parse(art.textSource)!;
-                const fragSrc = emitGlsl(expression);
-                glProgram = createProgram(gl, fragSrc);
-            }
-            return glProgram;
-        });
-    });
-
-    const frames = useSelector(selectArt).map((art, i) => {
-        const frameRef = createRef<HTMLDivElement>();
-        return {
-            getFrame: () => frameRef.current!,
-            element: (<div key={i.toString()} className={selectedIndices.has(i) ? "Selected" : "Deselected"}
-                           onClick={() => {
-                               const newSet = new Set(selectedIndices);
-                               if (newSet.has(i)) {
-                                   newSet.delete(i);
-                               } else {
-                                   newSet.add(i);
-                               }
-                               setSelectedIndices(newSet);
-                           }
-                           }>
-                <div ref={frameRef} className="ArtFrame"/>
-            </div>)
-        };
-    });
+    const frames = useSelector(selectArt).map((art, i) => <Art getGlContext={props.getGlContext} src={art.textSource}
+                                                               selectCallback={() => {
+                                                                   const newSet = new Set(selectedIndices);
+                                                                   selectedIndices.has(i) ? newSet.delete(i) : newSet.add(i);
+                                                                   setSelectedIndices(newSet);
+                                                               }}/>);
 
     const dispatch = useDispatch();
 
@@ -70,7 +38,6 @@ export default function Gallery(props: { getGlContext: () => WebGLRenderingConte
     useEffect(() => {
         const gl = props.getGlContext();
         const glCanvas = gl.canvas as HTMLCanvasElement;
-        const glPrograms = programs({gallery: {art}});
         const render = () => {
             resizeCanvasToDisplaySize(glCanvas);
             gl.enable(gl.CULL_FACE);
@@ -80,38 +47,6 @@ export default function Gallery(props: { getGlContext: () => WebGLRenderingConte
             // move the canvas to top of the current scroll position
             (gl.canvas as HTMLCanvasElement).style.transform = `translateY(${window.scrollY}px) translateX(${window.scrollX}px)`;
 
-            frames.forEach((frame, i) => {
-                if (frame.getFrame() === null) {
-                    return;
-                }
-
-                const rect = frame.getFrame().getBoundingClientRect();
-                if (rect.bottom < 0 || rect.top > glCanvas.clientHeight ||
-                    rect.right < 0 || rect.left > glCanvas.clientWidth) {
-                    return;  // it's off screen
-                }
-                const width = rect.right - rect.left;
-                const height = rect.bottom - rect.top;
-                const left = rect.left - 8;
-                const bottom = glCanvas.clientHeight - rect.bottom;
-
-                gl.viewport(left, bottom, width, height);
-                gl.scissor(left, bottom, width, height);
-                gl.clearColor(1, 0, 1, 1);
-
-                const glProgram = glPrograms[i];
-                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-                gl.useProgram(glProgram);
-
-                const glUniformTime = gl.getUniformLocation(glProgram!, "time");
-                gl.uniform1f(glUniformTime, 0);
-
-                const positionLoc = gl.getAttribLocation(glProgram!, "xy_pos");
-                gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
-                gl.enableVertexAttribArray(positionLoc);
-
-                gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-            });
             requestAnimationFrame(render);
         }
         const positionBuffer = gl.createBuffer();
@@ -124,7 +59,7 @@ export default function Gallery(props: { getGlContext: () => WebGLRenderingConte
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
         requestAnimationFrame(render);
-    }, [props, frames, programs]);
+    }, [props, frames]);
 
     return (
         <div className="Gallery">
@@ -142,7 +77,7 @@ export default function Gallery(props: { getGlContext: () => WebGLRenderingConte
                 <button onClick={() => dispatch(setAllArt({newArt: generateRandomArt()}))}>Next generation</button>
             </div>
             <div className="GalleryFlow" style={{display: "flex", flexWrap: "wrap"}}>
-                {frames.map(canvas => canvas.element)}
+                {frames}
             </div>
         </div>
     );
