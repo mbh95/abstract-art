@@ -8,9 +8,10 @@ import {parse} from "../expressions/parser";
 import {breed} from "../expressions/evolve";
 
 function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement): boolean {
+    const pixelRatio = window.devicePixelRatio || 1;
     // Lookup the size the browser is displaying the canvas in CSS pixels.
-    const displayWidth = canvas.clientWidth;
-    const displayHeight = canvas.clientHeight;
+    const displayWidth = canvas.clientWidth * pixelRatio;
+    const displayHeight = canvas.clientHeight * pixelRatio;
 
     // Check if the canvas is not the same size.
     const needResize = canvas.width !== displayWidth ||
@@ -47,7 +48,6 @@ export default function Gallery(props: { getGlContext: () => WebGLRenderingConte
             gl.enable(gl.CULL_FACE);
             gl.enable(gl.DEPTH_TEST);
             gl.enable(gl.SCISSOR_TEST);
-            gl.enable(gl.SAMPLES);
 
             // move the canvas to top of the current scroll position
             (gl.canvas as HTMLCanvasElement).style.transform = `translateY(${window.scrollY}px) translateX(${window.scrollX}px)`;

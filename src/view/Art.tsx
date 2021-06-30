@@ -46,9 +46,10 @@ export default function Art(props: {
                 const height = rect.bottom - rect.top;
                 const left = rect.left - 8;
                 const bottom = glCanvas.clientHeight - rect.bottom;
+                const pixelRatio = window.devicePixelRatio || 1;
 
-                gl.viewport(left, bottom, width, height);
-                gl.scissor(left, bottom, width, height);
+                gl.viewport(left * pixelRatio, bottom * pixelRatio, width * pixelRatio, height * pixelRatio);
+                gl.scissor(left * pixelRatio, bottom * pixelRatio, width * pixelRatio, height * pixelRatio);
 
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
                 gl.useProgram(glProgram);
