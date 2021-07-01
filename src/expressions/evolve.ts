@@ -41,7 +41,7 @@ function substitute(exp: Expression): Expression {
 export function mutate(exp: Expression): Expression {
     const r = Math.random();
     let newExp = exp;
-    if (r < 0.9) { // none
+    if (r < 0.99) { // none
     } else if (r < 1.0) { // substitution
         newExp = substitute(exp);
     }
