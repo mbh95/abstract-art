@@ -14,13 +14,14 @@ export enum TerminalType {
     VAR_T = "VAR_T",
 
     OP_INV = "OP_INV",
+    OP_ABS = "OP_ABS",
 
     OP_ADD = "OP_ADD",
     OP_SUB = "OP_SUB",
     OP_MUL = "OP_MUL",
     OP_DIV = "OP_DIV",
     OP_MOD = "OP_MOD",
-    OP_ABS = "OP_ABS",
+
 
     OP_DOT = "OP_DOT",
     OP_CROSS = "OP_CROSS",
@@ -77,12 +78,12 @@ export const TERMINALS: List<TerminalMetadata> = List.of<TerminalMetadata>(
     {type: TerminalType.VAR_Y, numArgs: 0, tokenLiteral: "y", glslEmitter: glslLiteral("y")},
     {type: TerminalType.VAR_T, numArgs: 0, tokenLiteral: "t", glslEmitter: glslLiteral("t")},
     {type: TerminalType.OP_INV, numArgs: 1, tokenLiteral: "inv", glslEmitter: glslFn("inv")},
+    {type: TerminalType.OP_ABS, numArgs: 1, tokenLiteral: "abs", glslEmitter: glslFn("abs")},
     {type: TerminalType.OP_ADD, numArgs: 2, tokenLiteral: "+", glslEmitter: glslInfix("+")},
     {type: TerminalType.OP_SUB, numArgs: 2, tokenLiteral: "-", glslEmitter: glslInfix("-")},
     {type: TerminalType.OP_MUL, numArgs: 2, tokenLiteral: "*", glslEmitter: glslInfix("*")},
     {type: TerminalType.OP_DIV, numArgs: 2, tokenLiteral: "/", glslEmitter: glslInfix("/")},
     {type: TerminalType.OP_MOD, numArgs: 2, tokenLiteral: "%", glslEmitter: glslFn("mod")},
-    {type: TerminalType.OP_ABS, numArgs: 1, tokenLiteral: "abs", glslEmitter: glslFn("abs")},
     {type: TerminalType.OP_DOT, numArgs: 2, tokenLiteral: "dot", glslEmitter: glslFn("dotp")},
     {type: TerminalType.OP_CROSS, numArgs: 2, tokenLiteral: "cross", glslEmitter: glslFn("cross")},
     {type: TerminalType.OP_SQRT, numArgs: 1, tokenLiteral: "sqrt", glslEmitter: glslFn("sqrt")},
@@ -107,7 +108,8 @@ export const TERMINALS: List<TerminalMetadata> = List.of<TerminalMetadata>(
     {type: TerminalType.OP_RGB, numArgs: 3, tokenLiteral: "rgb", glslEmitter: glslFn("rgb")},
     {type: TerminalType.OP_BW, numArgs: 1, tokenLiteral: "bw", glslEmitter: glslFn("bw")},
 );
-const TERMINALS_MAP: Map<TerminalType, TerminalMetadata> = TERMINALS.toMap().mapKeys((key: number, val: TerminalMetadata) => val.type);
+const TERMINALS_MAP: Map<TerminalType, TerminalMetadata> = TERMINALS.toMap()
+    .mapKeys((key: number, val: TerminalMetadata) => val.type);
 
 const LITERAL_TERMINALS: Map<string, TerminalMetadata> = TERMINALS_MAP
     .filter((val: TerminalMetadata, _key: TerminalType) => (val.tokenLiteral !== undefined))
