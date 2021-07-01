@@ -53,6 +53,8 @@ export enum TerminalType {
     OP_V = "OP_V",
     OP_RGB = "OP_RGB",
     OP_BW = "OP_BW",
+
+    OP_NOISE2D = "OP_NOISE2D",
 }
 
 export interface TerminalMetadata {
@@ -107,6 +109,8 @@ export const TERMINALS: List<TerminalMetadata> = List.of<TerminalMetadata>(
     {type: TerminalType.OP_V, numArgs: 3, tokenLiteral: "v", glslEmitter: glslFn("rgb")},
     {type: TerminalType.OP_RGB, numArgs: 3, tokenLiteral: "rgb", glslEmitter: glslFn("rgb")},
     {type: TerminalType.OP_BW, numArgs: 1, tokenLiteral: "bw", glslEmitter: glslFn("bw")},
+    {type: TerminalType.OP_NOISE2D, numArgs: 2, tokenLiteral: "noise2d", glslEmitter: glslFn("snoise2d")},
+
 );
 const TERMINALS_MAP: Map<TerminalType, TerminalMetadata> = TERMINALS.toMap()
     .mapKeys((key: number, val: TerminalMetadata) => val.type);

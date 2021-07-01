@@ -43,6 +43,8 @@ const TERMINAL_WEIGHTS: TerminalWeight[] = [
     {type: TerminalType.OP_V, weight: 1},
     {type: TerminalType.OP_RGB, weight: 2},
     {type: TerminalType.OP_BW, weight: 1},
+
+    {type: TerminalType.OP_NOISE2D, weight: 2},
 ];
 
 function cumulative(weights: TerminalWeight[]): TerminalWeight[] {
