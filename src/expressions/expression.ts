@@ -26,6 +26,10 @@ export default class Expression {
         return this.flatten().map(expr => expr.name).join(" ");
     }
 
+    public mapArgs(mapFn: (arg: Expression) => Expression): Expression {
+        return new Expression(this.type, this.name, this.args.map((arg) => mapFn(arg)));
+    }
+
     public findPath(prefixIndex: number): number[] | undefined {
         if (prefixIndex < 0 || prefixIndex >= this.size) {
             return undefined;

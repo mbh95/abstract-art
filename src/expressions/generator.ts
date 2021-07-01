@@ -7,7 +7,7 @@ export interface TerminalWeight {
     readonly weight: number;
 }
 
-const TERMINAL_WEIGHTS_LIST: TerminalWeight[] = [
+const TERMINAL_WEIGHTS: TerminalWeight[] = [
     {type: TerminalType.CONST, weight: 1},
     {type: TerminalType.VAR_X, weight: 1},
     {type: TerminalType.VAR_Y, weight: 1},
@@ -53,18 +53,27 @@ function cumulative(weights: TerminalWeight[]): TerminalWeight[] {
     return cumulativeWeights;
 }
 
-const TERMINAL_WEIGHTS_CUMULATIVE = cumulative(
-    TERMINAL_WEIGHTS_LIST);
+function cumulativeByArity(weights: TerminalWeight[]): TerminalWeight[][] {
+    if (weights.length === 0) {
+        return [[]];
+    }
+    let result = [];
+    const maxArity = Math.max(...weights.map((tw) => terminalMetadata(tw.type)!.numArgs));
+    for (let i = 0; i <= maxArity; i++) {
+        const inaryWeights = cumulative(TERMINAL_WEIGHTS
+            .filter((tw) => terminalMetadata(tw.type)?.numArgs === i));
+        result.push(inaryWeights);
+    }
+    return result;
+}
 
+export const CUMULATIVE_TERMINAL_WEIGHTS = cumulative(TERMINAL_WEIGHTS);
+export const CUMULATIVE_TERMINAL_WEIGHTS_BY_ARITY = cumulativeByArity(TERMINAL_WEIGHTS)
 
-const ZERO_ARG_WEIGHTS_CUMULATIVE = cumulative(
-    TERMINAL_WEIGHTS_LIST
-        .filter((tw) => terminalMetadata(tw.type)?.numArgs === 0));
-
-console.log(TERMINAL_WEIGHTS_CUMULATIVE);
-console.log(ZERO_ARG_WEIGHTS_CUMULATIVE);
-
-function chooseWeighted(cumulativeWeights: TerminalWeight[]): TerminalType {
+export function chooseWeighted(cumulativeWeights: TerminalWeight[]): TerminalType | undefined {
+    if (cumulativeWeights.length === 0) {
+        return undefined;
+    }
     // TODO: Validate that we have a monotonically increasing distribution.
     const total = cumulativeWeights[cumulativeWeights.length - 1].weight;
     const r = Math.random() * total;
@@ -89,9 +98,9 @@ export function randomExpression(maxDepth: number): Expression {
     }
     let randomTerminal: TerminalType;
     if (maxDepth === 1) {
-        randomTerminal = chooseWeighted(ZERO_ARG_WEIGHTS_CUMULATIVE);
+        randomTerminal = chooseWeighted(CUMULATIVE_TERMINAL_WEIGHTS_BY_ARITY[0])!;
     } else {
-        randomTerminal = chooseWeighted(TERMINAL_WEIGHTS_CUMULATIVE);
+        randomTerminal = chooseWeighted(CUMULATIVE_TERMINAL_WEIGHTS)!;
     }
     const randomTerminalMetadata = terminalMetadata(randomTerminal)!;
     if (randomTerminalMetadata.tokenLiteral === undefined) {
