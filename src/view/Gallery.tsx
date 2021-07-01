@@ -25,7 +25,7 @@ function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement, highDpi: boolean):
     return needResize;
 }
 
-export default function Gallery(props: { getGlContext: () => WebGLRenderingContext | null}) {
+export default function Gallery(props: { getGlContext: () => WebGLRenderingContext | null }) {
     const time = useRef<number>(0);
     const settings = useSelector(selectSettings);
     const art = useSelector(selectArt);
@@ -84,7 +84,6 @@ export default function Gallery(props: { getGlContext: () => WebGLRenderingConte
                 </div>
             </div>
             <div className="Controls" style={{display: "flex"}}>
-                {/*<button onClick={() => dispatch(random())}>Random</button>*/}
                 <button onClick={() => {
                     dispatch(setAllArt({newArt: generateRandomArt()}));
                 }}>Start over
@@ -102,7 +101,10 @@ export default function Gallery(props: { getGlContext: () => WebGLRenderingConte
                 </button>
             </div>
             <div className="GalleryFlow" style={{display: "flex", flexWrap: "wrap"}}>
-                {frames}
+                {frames.map((frame, i) =>
+                    <div key={i.toString()}>
+                        {frame}
+                    </div>)}
             </div>
         </div>
     );
