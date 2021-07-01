@@ -8,7 +8,7 @@ import "./App.css";
 export function generateRandomArt(n = 21): ArtState[] {
     const newArt = [];
     for (let i = 0; i < n; i++) {
-        newArt.push(createArtState(randomExpression(10).toString()));
+        newArt.push(createArtState(randomExpression(6).toString()));
     }
     return newArt;
 }
