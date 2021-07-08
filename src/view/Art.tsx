@@ -1,9 +1,9 @@
-import {parse} from "../expressions/parser";
-import {emitGlsl} from "../expressions/glslEmitter";
-import {createProgram} from "../gl/glUtils";
-import {createRef, useEffect, useState} from "react";
-import {ArtState, selectSettings, toggleSelected} from "../state/gallerySlice";
-import {useDispatch, useSelector} from "react-redux";
+import { parse } from "../expressions/parser";
+import { emitGlsl } from "../expressions/glslEmitter";
+import { createProgram } from "../gl/glUtils";
+import { createRef, useEffect, useState } from "react";
+import { ArtState, selectSettings, toggleSelected } from "../state/gallerySlice";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Art(props: {
     art: ArtState,
@@ -49,7 +49,7 @@ export default function Art(props: {
 
                 const width = rect.right - rect.left;
                 const height = rect.bottom - rect.top;
-                const left = rect.left - 8;
+                const left = rect.left;
                 const bottom = glCanvas.clientHeight - rect.bottom;
                 const pixelRatio = settings.highDpiSupport ? window.devicePixelRatio || 1 : 1;
 
@@ -78,6 +78,6 @@ export default function Art(props: {
 
     return <div className={"ArtFrame" + (props.art.selected ? " Selected" : " Deselected")}>
         <div ref={frameRef} className="ArtFrameClickTarget"
-             onClick={() => dispatch(toggleSelected({index: props.index}))}/>
+            onClick={() => dispatch(toggleSelected({ index: props.index }))} />
     </div>
 }
