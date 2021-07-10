@@ -40,7 +40,6 @@ const SYMBOL_WEIGHTS: SymbolWeight[] = [
     {type: SymbolType.OP_WRAP, weight: 1},
     {type: SymbolType.OP_USHIFT, weight: 1},
     {type: SymbolType.OP_BLEND, weight: 1},
-    {type: SymbolType.OP_V, weight: 1},
     {type: SymbolType.OP_RGB, weight: 2},
     {type: SymbolType.OP_BW, weight: 1},
 
