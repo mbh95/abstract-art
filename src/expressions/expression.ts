@@ -22,14 +22,25 @@ export default class Expression {
             .reduce((a, b) => a + b, 1);
     }
 
+    /**
+     * Return a string representation of this expression in prefix notation.
+     */
     public toString(): string {
         return this.flatten().map(expr => expr.name).join(" ");
     }
 
+    /**
+     * Apply a map function recursively to the arguments of this expression.
+     */
     public mapArgs(mapFn: (arg: Expression) => Expression): Expression {
         return new Expression(this.type, this.name, this.args.map((arg) => mapFn(arg)));
     }
 
+    /**
+     * Find a path from the root to the sub-expression indicated by prefixIndex.
+     *
+     * Returns the path as a list of prefix indices or undefined if no path exists.
+     */
     public findPath(prefixIndex: number): number[] | undefined {
         if (prefixIndex < 0 || prefixIndex >= this.size) {
             return undefined;
@@ -52,6 +63,11 @@ export default class Expression {
         return undefined;
     }
 
+    /**
+     * Find the nearest common ancestor of the two sub-expressions indicated by their prefix indices.
+     *
+     * Returns the prefix index of the nearest common ancestor or undefined if none exists (this happens iff at least one of the sub-expressions is invalid).
+     */
     public nearestCommonAncestor(prefixIndex1: number, prefixIndex2: number): number | undefined {
         const path1 = this.findPath(prefixIndex1);
         const path2 = this.findPath(prefixIndex2);
@@ -70,15 +86,24 @@ export default class Expression {
         return 0;
     }
 
+    /**
+     * Flatten this expression into a list of expressions in prefix order.
+     */
     public flatten(): List<Expression> {
         return List.of<Expression>(this)
             .concat(this.args.flatMap((expr) => expr.flatten()));
     }
 
+    /**
+     * Get the sub-expression indicated by the
+     */
     public get(prefixIndex: number): Expression | undefined {
         return this.flatten().get(prefixIndex);
     }
 
+    /**
+     * Replace the sub-expression indicated by prefixIndex by the given expression.
+     */
     public set(prefixIndex: number, exp: Expression): Expression {
         if (prefixIndex < 0 || prefixIndex >= this.size) {
             return this;
@@ -88,21 +113,24 @@ export default class Expression {
         }
         let nextRootIndex = prefixIndex - 1;
         const newArgs: Expression[] = []
-        for(let arg of this.args) {
+        for (let arg of this.args) {
             newArgs.push(arg.set(nextRootIndex, exp));
             nextRootIndex -= arg.size;
         }
         return new Expression(this.type, this.name, List.of(...newArgs));
     }
 
+    /**
+     * Choose a random sub-expression uniformly.
+     */
     public randomSubExpression(): number {
         return randomIntLessThan(this.size);
     }
 
     /**
-     * Choose a random node where each node is weighted by how many node pairs it is the nearest common ancestor of.
+     * Choose a random sub-expression where each is weighted by how many sub-expression pairs it is the nearest common ancestor of.
      */
-    public randomSubExpressionAncestorWeighted(): number {
+    public randomSubExpressionAncestorBiased(): number {
         const exp1Index = randomIntLessThan(this.size);
         const exp2Index = randomIntLessThan(this.size);
         return this.nearestCommonAncestor(exp1Index, exp2Index)!;
