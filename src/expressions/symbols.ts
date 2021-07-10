@@ -2,7 +2,7 @@ import {List, Map} from "immutable";
 import {glslFn, glslInfix, glslLiteral} from "./glslEmitter";
 import Expression from "./expression";
 
-export enum TerminalType {
+export enum SymbolType {
     CONST = "CONST",
     CONST_PI = "CONST_PI",
     CONST_TAU = "CONST_TAU",
@@ -57,82 +57,64 @@ export enum TerminalType {
     OP_NOISE2D = "OP_NOISE2D",
 }
 
-export interface TerminalMetadata {
-    readonly type: TerminalType;
+export interface Symbol {
+    readonly type: SymbolType;
     readonly numArgs: number;
     readonly tokenLiteral?: string;
     readonly tokenRegExp?: RegExp;
     readonly glslEmitter: (exp: Expression) => string;
 }
 
-export const TERMINALS: List<TerminalMetadata> = List.of<TerminalMetadata>(
+const SYMBOLS_LIST: List<Symbol> = List.of<Symbol>(
     {
-        type: TerminalType.CONST,
+        type: SymbolType.CONST,
         numArgs: 0,
         tokenRegExp: /^-?\d+(\.\d+)?$/,
         glslEmitter: (exp) => `vec3(${exp.name}, ${exp.name}, ${exp.name})`
     },
-    {type: TerminalType.CONST_PI, numArgs: 0, tokenLiteral: "pi", glslEmitter: glslLiteral("PI")},
-    {type: TerminalType.CONST_TAU, numArgs: 0, tokenLiteral: "tau", glslEmitter: glslLiteral("TAU")},
-    {type: TerminalType.CONST_E, numArgs: 0, tokenLiteral: "e", glslEmitter: glslLiteral("E")},
-    {type: TerminalType.CONST_PHI, numArgs: 0, tokenLiteral: "phi", glslEmitter: glslLiteral("PHI")},
-    {type: TerminalType.VAR_X, numArgs: 0, tokenLiteral: "x", glslEmitter: glslLiteral("x")},
-    {type: TerminalType.VAR_Y, numArgs: 0, tokenLiteral: "y", glslEmitter: glslLiteral("y")},
-    {type: TerminalType.VAR_T, numArgs: 0, tokenLiteral: "t", glslEmitter: glslLiteral("t")},
-    {type: TerminalType.OP_INV, numArgs: 1, tokenLiteral: "inv", glslEmitter: glslFn("inv")},
-    {type: TerminalType.OP_ABS, numArgs: 1, tokenLiteral: "abs", glslEmitter: glslFn("abs")},
-    {type: TerminalType.OP_ADD, numArgs: 2, tokenLiteral: "+", glslEmitter: glslInfix("+")},
-    {type: TerminalType.OP_SUB, numArgs: 2, tokenLiteral: "-", glslEmitter: glslInfix("-")},
-    {type: TerminalType.OP_MUL, numArgs: 2, tokenLiteral: "*", glslEmitter: glslInfix("*")},
-    {type: TerminalType.OP_DIV, numArgs: 2, tokenLiteral: "/", glslEmitter: glslInfix("/")},
-    {type: TerminalType.OP_MOD, numArgs: 2, tokenLiteral: "%", glslEmitter: glslFn("mod")},
-    {type: TerminalType.OP_DOT, numArgs: 2, tokenLiteral: "dot", glslEmitter: glslFn("dotp")},
-    {type: TerminalType.OP_CROSS, numArgs: 2, tokenLiteral: "cross", glslEmitter: glslFn("cross")},
-    {type: TerminalType.OP_SQRT, numArgs: 1, tokenLiteral: "sqrt", glslEmitter: glslFn("sqrt")},
-    {type: TerminalType.OP_POW, numArgs: 2, tokenLiteral: "pow", glslEmitter: glslFn("pow")},
-    {type: TerminalType.OP_EXP, numArgs: 1, tokenLiteral: "exp", glslEmitter: glslFn("exp")},
-    {type: TerminalType.OP_LOG, numArgs: 2, tokenLiteral: "log", glslEmitter: glslFn("logb")},
-    {type: TerminalType.OP_LN, numArgs: 1, tokenLiteral: "ln", glslEmitter: glslFn("log")},
-    {type: TerminalType.OP_SIN, numArgs: 1, tokenLiteral: "sin", glslEmitter: glslFn("sin")},
-    {type: TerminalType.OP_COS, numArgs: 1, tokenLiteral: "cos", glslEmitter: glslFn("cos")},
-    {type: TerminalType.OP_TAN, numArgs: 1, tokenLiteral: "tan", glslEmitter: glslFn("tan")},
-    {type: TerminalType.OP_FLOOR, numArgs: 1, tokenLiteral: "floor", glslEmitter: glslFn("floor")},
-    {type: TerminalType.OP_CEIL, numArgs: 1, tokenLiteral: "ceil", glslEmitter: glslFn("ceil")},
-    {type: TerminalType.OP_ROUND, numArgs: 1, tokenLiteral: "round", glslEmitter: glslFn("round")},
-    {type: TerminalType.OP_TRUNC, numArgs: 1, tokenLiteral: "trunc", glslEmitter: glslFn("trunc")},
-    {type: TerminalType.OP_MIN, numArgs: 2, tokenLiteral: "min", glslEmitter: glslFn("min")},
-    {type: TerminalType.OP_MAX, numArgs: 2, tokenLiteral: "max", glslEmitter: glslFn("max")},
-    {type: TerminalType.OP_CLIP, numArgs: 1, tokenLiteral: "clip", glslEmitter: glslFn("clip")},
-    {type: TerminalType.OP_WRAP, numArgs: 1, tokenLiteral: "wrap", glslEmitter: glslFn("wrap")},
-    {type: TerminalType.OP_USHIFT, numArgs: 1, tokenLiteral: "ushift", glslEmitter: glslFn("ushift")},
-    {type: TerminalType.OP_BLEND, numArgs: 3, tokenLiteral: "blend", glslEmitter: glslFn("blend")},
-    {type: TerminalType.OP_V, numArgs: 3, tokenLiteral: "v", glslEmitter: glslFn("rgb")},
-    {type: TerminalType.OP_RGB, numArgs: 3, tokenLiteral: "rgb", glslEmitter: glslFn("rgb")},
-    {type: TerminalType.OP_BW, numArgs: 1, tokenLiteral: "bw", glslEmitter: glslFn("bw")},
-    {type: TerminalType.OP_NOISE2D, numArgs: 2, tokenLiteral: "noise2d", glslEmitter: glslFn("snoise2d")},
+    {type: SymbolType.CONST_PI, numArgs: 0, tokenLiteral: "pi", glslEmitter: glslLiteral("PI")},
+    {type: SymbolType.CONST_TAU, numArgs: 0, tokenLiteral: "tau", glslEmitter: glslLiteral("TAU")},
+    {type: SymbolType.CONST_E, numArgs: 0, tokenLiteral: "e", glslEmitter: glslLiteral("E")},
+    {type: SymbolType.CONST_PHI, numArgs: 0, tokenLiteral: "phi", glslEmitter: glslLiteral("PHI")},
+    {type: SymbolType.VAR_X, numArgs: 0, tokenLiteral: "x", glslEmitter: glslLiteral("x")},
+    {type: SymbolType.VAR_Y, numArgs: 0, tokenLiteral: "y", glslEmitter: glslLiteral("y")},
+    {type: SymbolType.VAR_T, numArgs: 0, tokenLiteral: "t", glslEmitter: glslLiteral("t")},
+    {type: SymbolType.OP_INV, numArgs: 1, tokenLiteral: "inv", glslEmitter: glslFn("inv")},
+    {type: SymbolType.OP_ABS, numArgs: 1, tokenLiteral: "abs", glslEmitter: glslFn("abs")},
+    {type: SymbolType.OP_ADD, numArgs: 2, tokenLiteral: "+", glslEmitter: glslInfix("+")},
+    {type: SymbolType.OP_SUB, numArgs: 2, tokenLiteral: "-", glslEmitter: glslInfix("-")},
+    {type: SymbolType.OP_MUL, numArgs: 2, tokenLiteral: "*", glslEmitter: glslInfix("*")},
+    {type: SymbolType.OP_DIV, numArgs: 2, tokenLiteral: "/", glslEmitter: glslInfix("/")},
+    {type: SymbolType.OP_MOD, numArgs: 2, tokenLiteral: "%", glslEmitter: glslFn("mod")},
+    {type: SymbolType.OP_DOT, numArgs: 2, tokenLiteral: "dot", glslEmitter: glslFn("dotp")},
+    {type: SymbolType.OP_CROSS, numArgs: 2, tokenLiteral: "cross", glslEmitter: glslFn("cross")},
+    {type: SymbolType.OP_SQRT, numArgs: 1, tokenLiteral: "sqrt", glslEmitter: glslFn("sqrt")},
+    {type: SymbolType.OP_POW, numArgs: 2, tokenLiteral: "pow", glslEmitter: glslFn("pow")},
+    {type: SymbolType.OP_EXP, numArgs: 1, tokenLiteral: "exp", glslEmitter: glslFn("exp")},
+    {type: SymbolType.OP_LOG, numArgs: 2, tokenLiteral: "log", glslEmitter: glslFn("logb")},
+    {type: SymbolType.OP_LN, numArgs: 1, tokenLiteral: "ln", glslEmitter: glslFn("log")},
+    {type: SymbolType.OP_SIN, numArgs: 1, tokenLiteral: "sin", glslEmitter: glslFn("sin")},
+    {type: SymbolType.OP_COS, numArgs: 1, tokenLiteral: "cos", glslEmitter: glslFn("cos")},
+    {type: SymbolType.OP_TAN, numArgs: 1, tokenLiteral: "tan", glslEmitter: glslFn("tan")},
+    {type: SymbolType.OP_FLOOR, numArgs: 1, tokenLiteral: "floor", glslEmitter: glslFn("floor")},
+    {type: SymbolType.OP_CEIL, numArgs: 1, tokenLiteral: "ceil", glslEmitter: glslFn("ceil")},
+    {type: SymbolType.OP_ROUND, numArgs: 1, tokenLiteral: "round", glslEmitter: glslFn("round")},
+    {type: SymbolType.OP_TRUNC, numArgs: 1, tokenLiteral: "trunc", glslEmitter: glslFn("trunc")},
+    {type: SymbolType.OP_MIN, numArgs: 2, tokenLiteral: "min", glslEmitter: glslFn("min")},
+    {type: SymbolType.OP_MAX, numArgs: 2, tokenLiteral: "max", glslEmitter: glslFn("max")},
+    {type: SymbolType.OP_CLIP, numArgs: 1, tokenLiteral: "clip", glslEmitter: glslFn("clip")},
+    {type: SymbolType.OP_WRAP, numArgs: 1, tokenLiteral: "wrap", glslEmitter: glslFn("wrap")},
+    {type: SymbolType.OP_USHIFT, numArgs: 1, tokenLiteral: "ushift", glslEmitter: glslFn("ushift")},
+    {type: SymbolType.OP_BLEND, numArgs: 3, tokenLiteral: "blend", glslEmitter: glslFn("blend")},
+    {type: SymbolType.OP_V, numArgs: 3, tokenLiteral: "v", glslEmitter: glslFn("rgb")},
+    {type: SymbolType.OP_RGB, numArgs: 3, tokenLiteral: "rgb", glslEmitter: glslFn("rgb")},
+    {type: SymbolType.OP_BW, numArgs: 1, tokenLiteral: "bw", glslEmitter: glslFn("bw")},
+    {type: SymbolType.OP_NOISE2D, numArgs: 2, tokenLiteral: "noise2d", glslEmitter: glslFn("snoise2d")},
 
 );
-const TERMINALS_MAP: Map<TerminalType, TerminalMetadata> = TERMINALS.toMap()
-    .mapKeys((key: number, val: TerminalMetadata) => val.type);
+export const SYMBOLS: Map<SymbolType, Symbol> = SYMBOLS_LIST.toMap()
+    .mapKeys((key: number, val: Symbol) => val.type);
 
-const LITERAL_TERMINALS: Map<string, TerminalMetadata> = TERMINALS_MAP
-    .filter((val: TerminalMetadata, _key: TerminalType) => (val.tokenLiteral !== undefined))
-    .mapKeys((k: TerminalType, v: TerminalMetadata) => v.tokenLiteral!);
-
-const REGEXP_TERMINALS: List<TerminalMetadata> = TERMINALS.filter(op => op.tokenRegExp !== undefined);
-
-export function terminalMetadata(type: TerminalType): TerminalMetadata | undefined {
-    return TERMINALS_MAP.get(type);
-}
-
-export function recognizeTerminal(str: string): TerminalMetadata | undefined {
-    const term = LITERAL_TERMINALS.get(str);
-    if (term !== undefined) {
-        return term;
-    }
-    for (const term of REGEXP_TERMINALS) {
-        if (term.tokenRegExp!.test(str)) {
-            return term;
-        }
-    }
+export function getSymbol(type: SymbolType): Symbol | undefined {
+    return SYMBOLS.get(type);
 }

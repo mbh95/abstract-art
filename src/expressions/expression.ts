@@ -1,4 +1,4 @@
-import {TerminalType} from "./terminals";
+import {SymbolType} from "./symbols";
 import {List} from "immutable";
 import {randomIntLessThan} from "../math/random";
 
@@ -9,12 +9,12 @@ import {randomIntLessThan} from "../math/random";
  * by prefix index relative to some ancestor node.
  */
 export default class Expression {
-    readonly type: TerminalType;
+    readonly type: SymbolType;
     readonly name: string;
     readonly args: List<Expression>;
     readonly size: number; // total number of nodes in subtree rooted at this expression.
 
-    constructor(type: TerminalType, name: string, args: List<Expression>) {
+    constructor(type: SymbolType, name: string, args: List<Expression>) {
         this.type = type;
         this.name = name;
         this.args = args;

@@ -1,30 +1,12 @@
-import {recognizeTerminal, TerminalMetadata} from "./terminals";
-
 export enum TokenType {
     PAREN_OPEN = "PAREN_OPEN",
     PAREN_CLOSE = "PAREN_CLOSE",
-    TERMINAL = "TERMINAL",
+    SYMBOL = "SYMBOL",
 }
 
 export interface Token {
     readonly type: TokenType;
     readonly val: string;
-    readonly terminalMetadata?: TerminalMetadata;
-}
-
-/**
- * Convert the string representation of a single token of type OP into a Token.
- * Returns undefined if the string does not represent a valid OP token.
- */
-function terminalStrToToken(terminal: string): Token | undefined {
-    const terminalMetadata: TerminalMetadata | undefined = recognizeTerminal(terminal);
-    if (terminalMetadata) {
-        return {
-            type: TokenType.TERMINAL,
-            val: terminal,
-            terminalMetadata,
-        }
-    }
 }
 
 function isWhitespace(s: string): boolean {
@@ -112,6 +94,6 @@ export class Scanner {
                 tokBuf += nextChar;
             }
         }
-        return terminalStrToToken(tokBuf);
+        return {type: TokenType.SYMBOL, val: tokBuf};
     }
 }

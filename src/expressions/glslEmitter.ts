@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import header from "!raw-loader!./glsl/header.frag";
 import Expression from "./expression";
-import {terminalMetadata} from "./terminals";
+import {getSymbol} from "./symbols";
 
 export function glslLiteral(literal: string): (exp: Expression) => string {
     return (_exp) => literal;
@@ -16,7 +16,7 @@ export function glslInfix(joiner: string): (exp: Expression) => string {
 }
 
 function emit(exp: Expression): string {
-    return terminalMetadata(exp.type)!.glslEmitter(exp);
+    return getSymbol(exp.type)!.glslEmitter(exp);
 }
 
 export function emitGlsl(exp: Expression): string {

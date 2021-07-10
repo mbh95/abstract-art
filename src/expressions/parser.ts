@@ -1,68 +1,74 @@
-import {Scanner, Token, TokenType} from "./scanner";
+import {Scanner, TokenType} from "./scanner";
 import Expression from "./expression";
 import {List} from "immutable";
+import {recognizeSymbol} from "./recognizer";
 
 /**
  * Parse a string representing an expression into an Expression AST.
  *
  * Grammar:
  * Expression -> (Expression)
- * Expression -> TERMINAL ArgList
+ * Expression -> SYMBOL ArgList
  * ArgList -> Expression ArgList
  * ArgList -> _
  *
- * Each TERMINAL token represents either an Operator with a known number of arguments, a variable, or a constant value.
+ * Each SYMBOL token represents either an Operator with a known number of arguments, a variable, or a constant value.
  */
-export function parse(str: string): Expression {
-    const scan: Scanner = new Scanner(str);
-    const exp = parseExpression(scan);
-    expectEnd(scan);
+
+export function parse(input: string): Expression {
+    const parser: Parser = new Parser(input);
+    const exp = parser.parseExpression();
+    parser.expectEnd();
     return exp;
 }
 
-function expectEnd(scan: Scanner): void {
-    const nextToken = scan.nextToken();
-    if (nextToken !== undefined) {
-        throw Error(`Parse error: Expected end of expression, found "${nextToken.val}"`);
-    }
-}
+class Parser {
+    readonly scanner: Scanner;
 
-function expectAndConsume(scan: Scanner, tokenType: TokenType): void {
-    const tok = scan.nextToken();
-    if (tok === undefined) {
-        throw Error(`Parse error: Expected token of type ${tokenType}, found none.`)
-    } else if (tok.type !== tokenType) {
-        throw Error(`Parse error: Expected token of type ${tokenType}, found token of type ${tok.type}.`)
-    }
-}
-
-function parseExpression(scan: Scanner): Expression {
-    const firstToken = scan.nextToken();
-    if (firstToken === undefined) {
-        throw Error(`Parse error: Expected expression, found none.`);
-    } else if (firstToken.type === TokenType.PAREN_OPEN) { // Expression -> (Expression)
-        const exp = parseExpression(scan);
-        expectAndConsume(scan, TokenType.PAREN_CLOSE);
-        return exp;
-    } else if (firstToken.type === TokenType.TERMINAL) { // Expression -> TERMINAL ArgList
-        return parseTerminalAndArgList(firstToken, scan);
-    }
-    throw Error(`Parse error: Unexpected token: ${firstToken}.`);
-}
-
-function parseTerminalAndArgList(token: Token, scan: Scanner): Expression {
-    if (token.type !== TokenType.TERMINAL || !token.terminalMetadata) {
-        throw Error(`Parse error: Invalid TERMINAL token ${token}`);
+    constructor(input: string) {
+        this.scanner = new Scanner(input);
     }
 
-    // ArgList -> Expression ArgList
-    // ArgList -> _
-    const args = [];
-    for (let i = 0; i < token.terminalMetadata.numArgs; i++) {
-        args.push(parseExpression(scan));
+    expectEnd(): void {
+        const nextToken = this.scanner.nextToken();
+        if (nextToken !== undefined) {
+            throw Error(`Parse error: Expected end of expression, found "${nextToken.val}"`);
+        }
     }
-    return new Expression(
-        token.terminalMetadata.type,
-        token.val,
-        List.of(...args));
+
+    expectAndConsume(tokenType: TokenType): void {
+        const tok = this.scanner.nextToken();
+        if (tok === undefined) {
+            throw Error(`Parse error: Expected token of type ${tokenType}, found none.`)
+        } else if (tok.type !== tokenType) {
+            throw Error(`Parse error: Expected token of type ${tokenType}, found token of type ${tok.type}.`)
+        }
+    }
+
+    parseExpression(): Expression {
+        const firstToken = this.scanner.nextToken();
+        if (firstToken === undefined) {
+            throw Error(`Parse error: Expected expression, found none.`);
+        } else if (firstToken.type === TokenType.PAREN_OPEN) { // Expression -> (Expression)
+            const exp = this.parseExpression();
+            this.expectAndConsume(TokenType.PAREN_CLOSE);
+            return exp;
+        } else if (firstToken.type === TokenType.SYMBOL) { // Expression -> SYMBOL ArgList
+            const sym = recognizeSymbol(firstToken.val);
+            if (sym === undefined) {
+                throw new Error(`Parse error: Unrecognized symbol: "${firstToken.val}"`);
+            }
+            // ArgList -> Expression ArgList
+            // ArgList -> _
+            const args = [];
+            for (let i = 0; i < sym.numArgs; i++) {
+                args.push(this.parseExpression());
+            }
+            return new Expression(
+                sym.type,
+                firstToken.val,
+                List.of(...args));
+        }
+        throw Error(`Parse error: Unexpected token: ${firstToken}.`);
+    }
 }
