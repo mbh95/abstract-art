@@ -8,6 +8,17 @@ export interface Token {
     readonly type: TokenType;
     readonly val: string;
 }
+export function symbolToken(val: string): Token {
+    return {type: TokenType.SYMBOL, val};
+}
+
+export function parenOpenToken(): Token {
+    return {type: TokenType.PAREN_OPEN, val: "("};
+}
+
+export function parenCloseToken(): Token {
+    return {type: TokenType.PAREN_CLOSE, val: ")"};
+}
 
 function isWhitespace(s: string): boolean {
     return /^\s+$/.test(s);
@@ -75,9 +86,9 @@ export class Scanner {
             return undefined;
         }
         if (isOpenParen(tokBuf)) {
-            return {type: TokenType.PAREN_OPEN, val: "("};
+            return parenOpenToken();
         } else if (isCloseParen(tokBuf)) {
-            return {type: TokenType.PAREN_CLOSE, val: ")"};
+            return parenCloseToken();
         }
         let terminated = false;
         while (!terminated) {
@@ -94,6 +105,6 @@ export class Scanner {
                 tokBuf += nextChar;
             }
         }
-        return {type: TokenType.SYMBOL, val: tokBuf};
+        return symbolToken(tokBuf);
     }
 }
