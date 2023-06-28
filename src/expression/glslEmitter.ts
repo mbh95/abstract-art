@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import header from "!raw-loader!./glsl/header.frag";
+import header from "!raw-loader!./header.frag";
 import Expression from "./expression";
-import {getSymbol} from "./symbols";
+import { getSymbol } from "./symbols";
 
 export function glslLiteral(literal: string): (exp: Expression) => string {
     return (_exp) => literal;

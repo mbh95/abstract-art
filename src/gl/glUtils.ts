@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import defaultVert from "!raw-loader!../expressions/glsl/default.vert";
+import defaultVert from "!raw-loader!./default.vert";
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import defaultFrag from "!raw-loader!../expressions/glsl/default.frag";
+import defaultFrag from "!raw-loader!./default.frag";
 
 function createShader(
     gl: WebGLRenderingContext, type: GLenum, source: string): WebGLShader | null {
@@ -14,7 +14,7 @@ function createShader(
         return shader;
     }
     console.error(`Failed to compile ${type === gl.FRAGMENT_SHADER ? "FRAGMENT_SHADER" : (type
-    === gl.VERTEX_SHADER
+        === gl.VERTEX_SHADER
         ? "VERTEX_SHADER" : "UNKNOWN SHADER TYPE")}:`);
     console.error(source);
     console.error(gl.getShaderInfoLog(shader));

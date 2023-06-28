@@ -1,8 +1,8 @@
 import Gallery from "./Gallery";
-import React, {useEffect, useRef} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {ArtState, createArtState, selectSettings, setAllArt, updateSettings} from "../state/gallerySlice";
-import {randomExpression} from "../expressions/generator";
+import React, { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { ArtState, createArtState, selectSettings, setAllArt, updateSettings } from "../state/gallerySlice";
+import { randomExpression } from "../expression/generator";
 import "./App.css";
 
 export function generateRandomArt(n = 21): ArtState[] {
@@ -22,33 +22,33 @@ export default function App() {
         if (canvas.current === null) {
             return null;
         }
-        return canvas.current.getContext('webgl', {antialias: false});
+        return canvas.current.getContext('webgl', { antialias: false });
     }
 
     // Generate initial functions.
     useEffect(() => {
-        dispatch(setAllArt({newArt: generateRandomArt()}));
+        dispatch(setAllArt({ newArt: generateRandomArt() }));
     }, [dispatch]);
     return (<div>
-        <canvas ref={canvas} id="glCanvas"/>
-        <Gallery getGlContext={getGlContext}/>
+        <canvas ref={canvas} id="glCanvas" />
+        <Gallery getGlContext={getGlContext} />
         <div>
             <i>"This art may not make sense to you. It makes Ness sleepy just thinking about it. Use Paralysis to knock
                 some sense into the painting."</i>
-            <br/>
+            <br />
             — EarthBound Player's Guide
         </div>
-        <br/>
-        <div style={{color: "yellow"}}>
+        <br />
+        <div style={{ color: "yellow" }}>
             UX developer wanted :)
         </div>
-        <div style={{color: "blue"}}>
+        <div style={{ color: "blue" }}>
             <a href="https://github.com/mbh95/abstract-art">GitHub repo</a>
         </div>
         <input type="checkbox"
-               name="highdpi"
-               onChange={(e) => dispatch(updateSettings({newSettings: {highDpiSupport: e.target.checked}}))}
-               checked={settings.highDpiSupport}/>
+            name="highdpi"
+            onChange={(e) => dispatch(updateSettings({ newSettings: { highDpiSupport: e.target.checked } }))}
+            checked={settings.highDpiSupport} />
         <label htmlFor="highdpi">High DPI Support</label>
     </div>);
 }

@@ -1,5 +1,5 @@
-import {getSymbol, SymbolType} from "./symbols";
-import {List} from "immutable";
+import { getSymbol, SymbolType } from "./symbols";
+import { List } from "immutable";
 import Expression from "./expression";
 
 export interface SymbolWeight {
@@ -8,48 +8,48 @@ export interface SymbolWeight {
 }
 
 const SYMBOL_WEIGHTS: SymbolWeight[] = [
-    {type: SymbolType.CONST, weight: 1},
-    {type: SymbolType.VAR_X, weight: 1},
-    {type: SymbolType.VAR_Y, weight: 1},
-    {type: SymbolType.VAR_T, weight: 2},
+    { type: SymbolType.CONST, weight: 1 },
+    { type: SymbolType.VAR_X, weight: 1 },
+    { type: SymbolType.VAR_Y, weight: 1 },
+    { type: SymbolType.VAR_T, weight: 2 },
 
-    {type: SymbolType.OP_INV, weight: 1},
-    {type: SymbolType.OP_ABS, weight: 1},
-    {type: SymbolType.OP_ADD, weight: 1},
-    {type: SymbolType.OP_SUB, weight: 1},
-    {type: SymbolType.OP_MUL, weight: 1},
-    {type: SymbolType.OP_DIV, weight: 1},
-    {type: SymbolType.OP_MOD, weight: 1},
-    {type: SymbolType.OP_DOT, weight: 1},
-    {type: SymbolType.OP_CROSS, weight: 1},
-    {type: SymbolType.OP_SQRT, weight: 1},
-    {type: SymbolType.OP_POW, weight: 1},
-    {type: SymbolType.OP_EXP, weight: 1},
-    {type: SymbolType.OP_LOG, weight: 1},
-    {type: SymbolType.OP_LN, weight: 1},
-    {type: SymbolType.OP_SIN, weight: 1},
-    {type: SymbolType.OP_COS, weight: 1},
-    {type: SymbolType.OP_TAN, weight: 1},
-    {type: SymbolType.OP_FLOOR, weight: 1},
-    {type: SymbolType.OP_CEIL, weight: 1},
-    {type: SymbolType.OP_ROUND, weight: 1},
-    {type: SymbolType.OP_TRUNC, weight: 1},
-    {type: SymbolType.OP_MIN, weight: 1},
-    {type: SymbolType.OP_MAX, weight: 1},
-    {type: SymbolType.OP_CLIP, weight: 1},
-    {type: SymbolType.OP_WRAP, weight: 1},
-    {type: SymbolType.OP_USHIFT, weight: 1},
-    {type: SymbolType.OP_BLEND, weight: 1},
-    {type: SymbolType.OP_RGB, weight: 2},
-    {type: SymbolType.OP_BW, weight: 1},
+    { type: SymbolType.OP_INV, weight: 1 },
+    { type: SymbolType.OP_ABS, weight: 1 },
+    { type: SymbolType.OP_ADD, weight: 1 },
+    { type: SymbolType.OP_SUB, weight: 1 },
+    { type: SymbolType.OP_MUL, weight: 1 },
+    { type: SymbolType.OP_DIV, weight: 1 },
+    { type: SymbolType.OP_MOD, weight: 1 },
+    { type: SymbolType.OP_DOT, weight: 1 },
+    { type: SymbolType.OP_CROSS, weight: 1 },
+    { type: SymbolType.OP_SQRT, weight: 1 },
+    { type: SymbolType.OP_POW, weight: 1 },
+    { type: SymbolType.OP_EXP, weight: 1 },
+    { type: SymbolType.OP_LOG, weight: 1 },
+    { type: SymbolType.OP_LN, weight: 1 },
+    { type: SymbolType.OP_SIN, weight: 1 },
+    { type: SymbolType.OP_COS, weight: 1 },
+    { type: SymbolType.OP_TAN, weight: 1 },
+    { type: SymbolType.OP_FLOOR, weight: 1 },
+    { type: SymbolType.OP_CEIL, weight: 1 },
+    { type: SymbolType.OP_ROUND, weight: 1 },
+    { type: SymbolType.OP_TRUNC, weight: 1 },
+    { type: SymbolType.OP_MIN, weight: 1 },
+    { type: SymbolType.OP_MAX, weight: 1 },
+    { type: SymbolType.OP_CLIP, weight: 1 },
+    { type: SymbolType.OP_WRAP, weight: 1 },
+    { type: SymbolType.OP_USHIFT, weight: 1 },
+    { type: SymbolType.OP_BLEND, weight: 1 },
+    { type: SymbolType.OP_RGB, weight: 2 },
+    { type: SymbolType.OP_BW, weight: 1 },
 
-    {type: SymbolType.OP_NOISE2D, weight: 2},
+    { type: SymbolType.OP_NOISE2D, weight: 2 },
 ];
 
 function cumulative(weights: SymbolWeight[]): SymbolWeight[] {
     let cumulativeWeights = [weights[0]];
     for (let i = 1; i < weights.length; i++) {
-        cumulativeWeights.push({type: weights[i].type, weight: cumulativeWeights[i - 1].weight + weights[i].weight});
+        cumulativeWeights.push({ type: weights[i].type, weight: cumulativeWeights[i - 1].weight + weights[i].weight });
     }
     return cumulativeWeights;
 }

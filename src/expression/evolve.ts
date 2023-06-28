@@ -1,7 +1,7 @@
 import Expression from "./expression";
-import {randomIntLessThan} from "../math/random";
-import {getSymbol} from "./symbols";
-import {chooseWeighted, CUMULATIVE_SYMBOL_WEIGHTS_BY_DEGREE, randomConst} from "./generator";
+import { randomIntLessThan } from "../math/random";
+import { getSymbol } from "./symbols";
+import { chooseWeighted, CUMULATIVE_SYMBOL_WEIGHTS_BY_DEGREE, randomConst } from "./generator";
 
 export function breed(parents: Expression[], n = -1): Expression[] {
     if (n < 0) {
@@ -28,7 +28,7 @@ function substitute(exp: Expression): Expression {
         return exp;
     }
     const replacementMeta = getSymbol(replacement)!;
-    if (replacementMeta.numArgs !== exp.args.size ) {
+    if (replacementMeta.numArgs !== exp.args.size) {
         throw new Error("Arity mismatch during substitution mutation.");
     }
     // TODO: Handle this better.

@@ -1,11 +1,11 @@
-import React, {useEffect, useRef} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
-import {createArtState, selectArt, selectSettings, setAllArt} from "../state/gallerySlice";
+import React, { useEffect, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { createArtState, selectArt, selectSettings, setAllArt } from "../state/gallerySlice";
 import "./Gallery.css";
-import {generateRandomArt} from "./App";
+import { generateRandomArt } from "./App";
 import Art from "./Art";
-import {parse} from "../expressions/parser";
-import {breed} from "../expressions/evolve";
+import { parse } from "../expression/parser";
+import { breed } from "../expression/evolve";
 
 function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement, highDpi: boolean): boolean {
     const pixelRatio = highDpi ? window.devicePixelRatio || 1 : 1;
@@ -32,9 +32,9 @@ export default function Gallery(props: { getGlContext: () => WebGLRenderingConte
     const frames = useSelector(selectArt)
         .map((art, i) =>
             <Art art={art}
-                 index={i}
-                 getTime={() => time.current}
-                 getGlContext={props.getGlContext}/>);
+                index={i}
+                getTime={() => time.current}
+                getGlContext={props.getGlContext} />);
 
     const dispatch = useDispatch();
     const gl = props.getGlContext();
@@ -58,11 +58,11 @@ export default function Gallery(props: { getGlContext: () => WebGLRenderingConte
             animationRequest = requestAnimationFrame(render);
         }
         const positionBuffer = gl.createBuffer();
+        // Drawing a fullscreen triangle is slightly faster than drawing a fullscreen quad.
         const vertices = new Float32Array([
-            -1.0, 1.0,
             -1.0, -1.0,
-            1.0, 1.0,
-            1.0, -1.0
+            3.0, -1.0,
+            -1.0, 3.0,
         ]);
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
@@ -78,16 +78,16 @@ export default function Gallery(props: { getGlContext: () => WebGLRenderingConte
                 <div>
                     Select expressions you like by clicking on them. Press "Breed selected" to breed the selected
                     expressions together randomly.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     If you don't like any of the expressions then press "Start over" to get new ones.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                 </div>
             </div>
-            <div className="Controls" style={{display: "flex"}}>
+            <div className="Controls" style={{ display: "flex" }}>
                 <button onClick={() => {
-                    dispatch(setAllArt({newArt: generateRandomArt()}));
+                    dispatch(setAllArt({ newArt: generateRandomArt() }));
                 }}>Start over
                 </button>
                 <button onClick={() => {
@@ -98,11 +98,11 @@ export default function Gallery(props: { getGlContext: () => WebGLRenderingConte
                     }
                     const newArt = breed(selectedPieces, art.length)
                         .map((expression, i) => createArtState(expression.toString()));
-                    dispatch(setAllArt({newArt}));
+                    dispatch(setAllArt({ newArt }));
                 }}>Breed selected
                 </button>
             </div>
-            <div className="GalleryFlow" style={{display: "flex", flexWrap: "wrap"}}>
+            <div className="GalleryFlow" style={{ display: "flex", flexWrap: "wrap" }}>
                 {frames.map((frame, i) =>
                     <div key={i.toString()}>
                         {frame}

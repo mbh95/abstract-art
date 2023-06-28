@@ -1,4 +1,4 @@
-import {parenCloseToken, parenOpenToken, Scanner, symbolToken, Token} from "./scanner";
+import { parenCloseToken, parenOpenToken, Scanner, symbolToken, Token } from "./scanner";
 
 function expectExactlyTokens(input: string, expectedTokens: Token[]) {
     const scanner = new Scanner(input);

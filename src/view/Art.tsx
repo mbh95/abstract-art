@@ -1,5 +1,5 @@
-import { parse } from "../expressions/parser";
-import { emitGlsl } from "../expressions/glslEmitter";
+import { parse } from "../expression/parser";
+import { emitGlsl } from "../expression/glslEmitter";
 import { createProgram } from "../gl/glUtils";
 import { createRef, useEffect, useState } from "react";
 import { ArtState, selectSettings, toggleSelected } from "../state/gallerySlice";
@@ -66,7 +66,7 @@ export default function Art(props: {
                 gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
                 gl.enableVertexAttribArray(positionLoc);
 
-                gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+                gl.drawArrays(gl.TRIANGLES, 0, 3);
             }
             animationRequest = requestAnimationFrame(render);
         }

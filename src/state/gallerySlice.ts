@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface GalleryState {
     art: ArtState[];
@@ -52,7 +52,7 @@ export interface UpdateSettingsActionPayload {
 
 export const gallerySlice = createSlice({
     name: 'gallery',
-    initialState: {art: [] as ArtState[], settings: defaultSettings} as GalleryState,
+    initialState: { art: [] as ArtState[], settings: defaultSettings } as GalleryState,
     reducers: {
         addArt: (state, event: PayloadAction<AddArtActionPayload>) => {
             state.art.push(createArtState(event.payload.newSource));
@@ -70,12 +70,12 @@ export const gallerySlice = createSlice({
             state.art[event.payload.index].selected = !state.art[event.payload.index].selected;
         },
         updateSettings: (state, event: PayloadAction<UpdateSettingsActionPayload>) => {
-          state.settings = event.payload.newSettings;
+            state.settings = event.payload.newSettings;
         },
     }
 })
 
-export const {addArt, editArt, setAllArt, deleteArt, toggleSelected, updateSettings} = gallerySlice.actions
+export const { addArt, editArt, setAllArt, deleteArt, toggleSelected, updateSettings } = gallerySlice.actions
 export const selectArt = (state: { gallery: GalleryState }) => state.gallery.art;
 export const selectSettings = (state: { gallery: GalleryState }) => state.gallery.settings;
 

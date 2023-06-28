@@ -1,7 +1,7 @@
-import {Scanner, TokenType} from "./scanner";
+import { Scanner, TokenType } from "./scanner";
 import Expression from "./expression";
-import {List} from "immutable";
-import {recognizeSymbol} from "./recognizer";
+import { List } from "immutable";
+import { recognizeSymbol } from "./symbols";
 
 /**
  * Parse a string representing an expression into an Expression AST.
