@@ -1,6 +1,6 @@
-import {SymbolType} from "./symbols";
-import {List} from "immutable";
-import {randomIntLessThan} from "../math/random";
+import { SymbolType } from "./symbols";
+import { List } from "immutable";
+import { randomIntLessThan } from "../math/random";
 
 /**
  * AST representation of an expression.
@@ -23,6 +23,14 @@ export default class Expression {
     }
 
     /**
+     * Flatten this expression into a list of expressions in prefix order.
+     */
+    public flatten(): List<Expression> {
+        return List.of<Expression>(this)
+            .concat(this.args.flatMap((expr) => expr.flatten()));
+    }
+
+    /**
      * Return a string representation of this expression in prefix notation.
      */
     public toString(): string {
@@ -34,6 +42,46 @@ export default class Expression {
      */
     public mapArgs(mapFn: (arg: Expression) => Expression): Expression {
         return new Expression(this.type, this.name, this.args.map((arg) => mapFn(arg)));
+    }
+
+    /**
+     * Get the sub-expression indicated by the prefix index.
+     */
+    public get(prefixIndex: number): Expression | undefined {
+        if (prefixIndex < 0 || prefixIndex >= this.size) {
+            return undefined;
+        }
+        if (prefixIndex === 0) {
+            return this;
+        }
+        let nextRootIndex = prefixIndex - 1;
+        for (let arg of this.args) {
+            const e = arg.get(nextRootIndex);
+            if (e !== undefined) {
+                return e;
+            }
+            nextRootIndex -= arg.size;
+        }
+        return undefined;
+    }
+
+    /**
+     * Replace the sub-expression indicated by prefixIndex by the given expression.
+     */
+    public set(prefixIndex: number, exp: Expression): Expression {
+        if (prefixIndex < 0 || prefixIndex >= this.size) {
+            return this;
+        }
+        if (prefixIndex === 0) {
+            return exp;
+        }
+        let nextRootIndex = prefixIndex - 1;
+        const newArgs: Expression[] = []
+        for (let arg of this.args) {
+            newArgs.push(arg.set(nextRootIndex, exp));
+            nextRootIndex -= arg.size;
+        }
+        return new Expression(this.type, this.name, List.of(...newArgs));
     }
 
     /**
@@ -87,40 +135,6 @@ export default class Expression {
     }
 
     /**
-     * Flatten this expression into a list of expressions in prefix order.
-     */
-    public flatten(): List<Expression> {
-        return List.of<Expression>(this)
-            .concat(this.args.flatMap((expr) => expr.flatten()));
-    }
-
-    /**
-     * Get the sub-expression indicated by the
-     */
-    public get(prefixIndex: number): Expression | undefined {
-        return this.flatten().get(prefixIndex);
-    }
-
-    /**
-     * Replace the sub-expression indicated by prefixIndex by the given expression.
-     */
-    public set(prefixIndex: number, exp: Expression): Expression {
-        if (prefixIndex < 0 || prefixIndex >= this.size) {
-            return this;
-        }
-        if (prefixIndex === 0) {
-            return exp;
-        }
-        let nextRootIndex = prefixIndex - 1;
-        const newArgs: Expression[] = []
-        for (let arg of this.args) {
-            newArgs.push(arg.set(nextRootIndex, exp));
-            nextRootIndex -= arg.size;
-        }
-        return new Expression(this.type, this.name, List.of(...newArgs));
-    }
-
-    /**
      * Choose a random sub-expression uniformly.
      */
     public randomSubExpression(): number {
@@ -131,9 +145,9 @@ export default class Expression {
      * Choose a random sub-expression where each is weighted by how many sub-expression pairs it is the nearest common ancestor of.
      */
     public randomSubExpressionAncestorBiased(): number {
-        const exp1Index = randomIntLessThan(this.size);
-        const exp2Index = randomIntLessThan(this.size);
-        return this.nearestCommonAncestor(exp1Index, exp2Index)!;
+        const e1 = this.randomSubExpression();
+        const e2 = this.randomSubExpression();
+        return this.nearestCommonAncestor(e1, e2)!;
     }
 }
 
